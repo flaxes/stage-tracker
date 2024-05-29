@@ -1,0 +1,13 @@
+{
+  "data": {
+    "1": {
+      "dateInput": "2024-04-30",
+      "task": "Test task",
+      "stage": "Bnw",
+      "hours": 50,
+      "id": 1,
+      "createdAt": 1717022844654
+    }
+  },
+  "lastIndex": 1
+}
