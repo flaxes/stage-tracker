@@ -36,10 +36,10 @@ class StageTracker {
 
     async render(currentWeek) {
         const monday = moment(currentWeek, WEEK_FORMAT);
-        const stagesRes = await request("/stages", "GET");
+        const stagesRes = await requestCached("stages", "GET");
         const stages = Object.values(stagesRes).map((item) => item.name);
 
-        const { theadColumns, columnDates, columnDays } = this.getTheadColumns(monday);
+        const { theadColumns, columnDates } = this.getTheadColumns(monday);
         const theadHtml = wrapTag("thead", "", {}, [wrapTag("tr", "", {}, theadColumns)]);
 
         const tbodyRows = [];
@@ -62,14 +62,14 @@ class StageTracker {
         this.dom.insertAdjacentHTML("beforeend", theadHtml);
         this.dom.insertAdjacentHTML("beforeend", tbodyRows);
 
-        this.dom.querySelectorAll(".create-new").forEach((button) => {
+        this.dom.querySelectorAll(".create-button").forEach((button) => {
             const { date, stage } = button.parentElement.dataset;
             button.onclick = (e) => {
                 this.createCell({ date, stage } /* , button.parentElement */);
             };
         });
 
-        const data = await request("task-stage-times", "GET");
+        const data = await requestCached("task-stage-times", "GET");
 
         for (const row of Object.values(data)) {
             this.createCell(row);
@@ -104,7 +104,7 @@ class StageTracker {
             taskSelector.value = row.task;
         }
 
-        createRemoteSelector(taskSelector, "tasks", "name", "name");
+        createRemoteSelector(taskSelector, "tasks", "id", "name");
 
         const hoursInput = div.querySelector('[name="hours"]');
         if (row.hours) hoursInput.value = row.hours;
@@ -112,10 +112,13 @@ class StageTracker {
         const deleteButton = div.querySelector("button");
 
         const saveAction = () => {
+            const taskSelectorValue = getSelectedOptionValue(taskSelector);
+
             const data = {
                 date: row.date,
                 stage: row.stage,
-                task: getSelectedOptionValue(taskSelector),
+                task: taskSelectorValue.text,
+                taskId: Number(taskSelectorValue.value),
                 hours: Number(hoursInput.value),
                 id: Number(div.dataset.id),
             };
@@ -141,6 +144,9 @@ class StageTracker {
         };
 
         const deleteAction = async () => {
+            const answer = confirm("Are you sure?");
+            if (!answer) return;
+
             const id = Number(div.dataset.id);
 
             if (id) {

@@ -46,8 +46,7 @@ thead {
 }
 
 th {
-    padding-right: 40px;
-    padding-bottom: 20px;
+    padding: 12px;
 
     background-color: lightgray;
 }

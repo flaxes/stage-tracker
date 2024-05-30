@@ -14,8 +14,9 @@ const WEEKDAY = {
     0: "sunday",
 };
 const WEEK_FORMAT = "YYYY-[W]WW";
+const cacheStore = {};
 
-async function request(path, method, data) {
+async function request(path, method = "GET", data) {
     try {
         path = `${BACKEND_PREFIX}/${path}`;
 
@@ -41,6 +42,29 @@ async function request(path, method, data) {
         console.error("ReqError:", error);
         throw error;
     }
+}
+
+async function requestCached(path, method = "GET", data, cacheTimeoutMs = 5e3) {
+    const key = `${method} ${path} ${data ? JSON.stringify(data) : null}`;
+
+    if (cacheStore[key]) return cacheStore[key];
+
+    const response = request(path, method, data);
+    cacheStore[key] = response;
+
+    const promise = response.catch((err) => {
+        delete cacheStore[key];
+
+        console.error(err);
+
+        throw err;
+    });
+
+    setTimeout(() => {
+        delete cacheStore[key];
+    }, cacheTimeoutMs);
+
+    return promise;
 }
 
 function copyToClipboard(text) {
@@ -97,10 +121,7 @@ function wrapTag(tag, text, props, elements) {
  */
 function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name") {
     dom.onfocus = async (e) => {
-        console.log(e.currentTarget);
-        // e.preventDefault();
-
-        const entities = await request(apiPath, "GET");
+        const entities = await requestCached(apiPath, "GET");
         const lastSel = dom.options[dom.selectedIndex];
 
         while (dom.options.length) {
@@ -130,7 +151,9 @@ function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name") {
 function getSelectedOptionValue(dom) {
     const val = dom.options[dom.selectedIndex];
 
-    return val ? val.value : null;
+    if (!val) return null;
+
+    return { value: val.value, text: val.innerText };
 }
 
 function q(selector) {
