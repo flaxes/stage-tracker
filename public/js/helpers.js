@@ -43,13 +43,49 @@ async function request(path, method, data) {
     }
 }
 
-function createElementWithText(el, text, className) {
-    const elem = document.createElement(el);
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+}
 
-    if (text) elem.innerText = text;
-    if (className) elem.className = className;
+/**
+ *
+ * @param {string} [err]
+ * @returns {never}
+ */
+function never(err = "never appears") {
+    throw new Error(err);
+}
 
-    return elem;
+/**
+ *
+ * @param {keyof HTMLElementTagNameMap} tag
+ * @param {string} [text]
+ * @param {Record<string, string> | null} [props]
+ * @param {string[]} [elements]
+ * @returns
+ */
+function wrapTag(tag, text, props, elements) {
+    let html = `<${tag}`;
+
+    if (props) {
+        for (const key in props) {
+            html += ` ${key}="${props[key]}"`;
+        }
+    }
+
+    html += ">";
+
+    if (elements) {
+        html += elements.join("");
+    }
+
+    if (text && elements && elements.length) {
+        throw new Error("Cannot create text and elements. Use text as element");
+    }
+
+    html += `${text || ""}</${tag}>`;
+
+    return html;
 }
 
 /**

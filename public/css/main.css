@@ -30,13 +30,12 @@ menu a:hover {
     justify-content: center;
 }
 
-.quick-menu div {
-    padding-right: 6px;
+.quick-menu > div {
     border: #000000 solid 1px;
 }
 
 .quick-menu div div {
-    padding-bottom: 12px;
+    padding: 12px;
 }
 
 @media screen and (max-width: 1000px) {

@@ -39,7 +39,7 @@ function activateCustomStageTimeForm() {
         e.preventDefault();
 
         const data = {
-            dateInput: dateInput.value,
+            date: dateInput.value,
             task: getSelectedOptionValue(taskSelector),
             stage: getSelectedOptionValue(stageSelector),
             hours: Number(hoursInput.value),
@@ -52,8 +52,6 @@ function activateCustomStageTimeForm() {
                 return;
             }
         }
-
-        console.log(data);
 
         request("/task-stage-times/create", "POST", [data])
             .then(() => {
@@ -98,6 +96,10 @@ function render() {
     activateCreateStageForm();
     activateCreateTaskForm();
     activateCustomStageTimeForm();
+
+    const stageTracker = new StageTracker("#week-table");
+
+    stageTracker.render(currentWeek);
 }
 
 render();
