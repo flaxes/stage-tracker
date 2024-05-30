@@ -35,6 +35,12 @@ function activateCustomStageTimeForm() {
     createRemoteSelector(taskSelector, "tasks", "name", "name");
     createRemoteSelector(stageSelector, "stages", "name", "name");
 
+    /** @type {HTMLDivElement} */
+    const quickMenuDom = q("#quick-menu-button");
+    quickMenuDom.onclick = () => {
+        q('#quick-menu').classList.toggle("d-none");
+    };
+
     dom.querySelector("button").onclick = (e) => {
         e.preventDefault();
 

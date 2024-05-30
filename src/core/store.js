@@ -25,33 +25,33 @@ class Store {
         return this.data.data;
     }
 
-    create(datas) {
+    create(data) {
         const now = Date.now();
 
-        for (const data of datas) {
+        for (const row of data) {
             const id = ++this.data.lastIndex;
-            data.id = id;
-            data.createdAt = now;
+            row.id = id;
+            row.createdAt = now;
 
-            this.data.data[id] = data;
+            this.data.data[id] = row;
         }
 
         this.save();
 
-        return datas;
+        return data;
     }
 
-    update(datas) {
+    update(data) {
         const now = Date.now();
 
-        for (const data of datas) {
-            this.data.data[data.id] = data;
-            data.updatedAt = now;
+        for (const row of data) {
+            this.data.data[row.id] = row;
+            row.updatedAt = now;
         }
 
         this.save();
 
-        return datas;
+        return data;
     }
 
     delete(ids) {

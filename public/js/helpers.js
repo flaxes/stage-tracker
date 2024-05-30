@@ -141,6 +141,18 @@ function qq(selector) {
     return document.querySelectorAll(selector);
 }
 
+function checkObjectForEmpty(obj, isStrict) {
+    for (const [key, value] of Object.entries(obj)) {
+        if (value === NaN || value === undefined) {
+            return key;
+        }
+
+        if (isStrict && !value) {
+            return key;
+        }
+    }
+}
+
 function minutesToSummary(minutes) {
     minutes = Number(minutes);
 

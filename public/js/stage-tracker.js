@@ -49,7 +49,9 @@ class StageTracker {
 
             for (const date of columnDates) {
                 cells.push(
-                    wrapTag("td", "", { id: `cell_${date}_${stage}`, "data-date": date }, [wrapTag("button", "+")])
+                    wrapTag("td", "", { id: `cell_${date}_${stage}`, "data-date": date, "data-stage": stage }, [
+                        wrapTag("button", "+", { class: "create-button" }),
+                    ])
                 );
             }
 
@@ -59,9 +61,100 @@ class StageTracker {
 
         this.dom.insertAdjacentHTML("beforeend", theadHtml);
         this.dom.insertAdjacentHTML("beforeend", tbodyRows);
+
+        this.dom.querySelectorAll(".create-new").forEach((button) => {
+            const { date, stage } = button.parentElement.dataset;
+            button.onclick = (e) => {
+                this.createCell({ date, stage } /* , button.parentElement */);
+            };
+        });
+
+        const data = await request("task-stage-times", "GET");
+
+        for (const row of Object.values(data)) {
+            this.createCell(row);
+        }
     }
 
-    async renderTable(date) {
-        let thead = wrapTag("thead", "", {});
+    createCell(row, el) {
+        if (!el) {
+            el = this.dom.querySelector(`#cell_${row.date}_${row.stage}`);
+        }
+
+        if (!el) {
+            return;
+        }
+
+        const div = document.createElement("div");
+        el.append(div);
+
+        if (row.id) {
+            div.dataset.id = row.id;
+        }
+
+        div.innerHTML = [
+            wrapTag("select", "", { name: "task" }),
+            wrapTag("input", "", { type: "number", min: "0", name: "hours" }),
+            wrapTag("button", "X", { class: "delete-button" }),
+        ].join("");
+
+        const taskSelector = div.querySelector('[name="task"]');
+        if (row.task) {
+            taskSelector.insertAdjacentHTML("afterbegin", wrapTag("option", row.task, { value: row.task }));
+            taskSelector.value = row.task;
+        }
+
+        createRemoteSelector(taskSelector, "tasks", "name", "name");
+
+        const hoursInput = div.querySelector('[name="hours"]');
+        if (row.hours) hoursInput.value = row.hours;
+
+        const deleteButton = div.querySelector("button");
+
+        const saveAction = () => {
+            const data = {
+                date: row.date,
+                stage: row.stage,
+                task: getSelectedOptionValue(taskSelector),
+                hours: Number(hoursInput.value),
+                id: Number(div.dataset.id),
+            };
+
+            const errorKey = checkObjectForEmpty(data, true);
+            if (errorKey && errorKey !== "id") {
+                console.warn(`"${errorKey}" is empty`);
+                return;
+            }
+
+            const requestPath = data.id ? "update" : "create";
+
+            request(`task-stage-times/${requestPath}`, "POST", data)
+                .then((data) => {
+                    div.dataset.id = data[0].id;
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert(err.message);
+                });
+
+            // button.remove();
+        };
+
+        const deleteAction = async () => {
+            const id = Number(div.dataset.id);
+
+            if (id) {
+                await request("task-stage-times/delete", "POST", [id]);
+            }
+
+            div.remove();
+        };
+
+        deleteButton.onclick = deleteAction;
+
+        hoursInput.addEventListener("change", saveAction);
+        taskSelector.addEventListener("change", saveAction);
+
+        // button.onclick = save;
     }
 }

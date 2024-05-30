@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content=" IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title t=" tracker_title">Calendar</title>
+    <title>Calendar</title>
     <link rel="stylesheet" href="/css/main.css" />
 
     <script src="/js/lib/moment.js"></script>
@@ -17,33 +17,34 @@
 <body>
     <menu>
         <a href="/">Home</a>
+        <a href="#" id="quick-menu-button">Quick menu</a>
         <!-- <a href="/tasks.html" t=" tasks"></a>
             <a href="/history.html" t=" history"></a> -->
         <a href="#" class="update-action" hidden>Update</a>
     </menu>
 
-    <div class="quick-menu">
+    <div id="quick-menu" class="d-none" hidden>
         <div id="create-custom-stage-time">
             <div>Add custom time</div>
 
             <div>
 
-                <label>Date</label>
+                <div>Date</div>
                 <input type="date" name="date">
             </div>
             <div>
 
-                <label>Task name</label>
+                <div>Task name</div>
                 <select name="task"></select>
             </div>
 
             <div>
-                <label>Stage</label>
+                <div>Stage</div>
                 <select name="stage"></select>
             </div>
 
             <div>
-                <label>Hours</label>
+                <div>Hours</div>
                 <input type="number" min="0" name="hours">
             </div>
 
@@ -55,7 +56,7 @@
             <div>Create task</div>
 
             <div>
-                <label>Task name</label>
+                <div>Task name</div>
                 <input type="text" name="name" autocomplete="off">
 
                 <button>Create</button>
@@ -66,7 +67,7 @@
             <div>Create stage</div>
 
             <div>
-                <label>Stage name</label>
+                <div>Stage name</div>
                 <input type="text" name="name" autocomplete="off">
 
                 <button>Create</button>

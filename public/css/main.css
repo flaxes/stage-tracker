@@ -25,18 +25,54 @@ menu a:hover {
     background-color: #8200aa;
 }
 
-.quick-menu {
+#quick-menu {
     display: flex;
     justify-content: center;
 }
 
-.quick-menu > div {
-    border: #000000 solid 1px;
+#quick-menu > div {
+    border: 1px solid #000000;
 }
 
-.quick-menu div div {
-    padding: 12px;
+#quick-menu div div {
+    padding: 2px;
 }
 
 @media screen and (max-width: 1000px) {
+}
+
+thead {
+    background-color: lightgray;
+}
+
+th {
+    padding-right: 40px;
+    padding-bottom: 20px;
+
+    background-color: lightgray;
+}
+
+tr {
+    outline: #000000 1px solid;
+}
+
+td {
+    padding: 6px;
+}
+
+select[name="task"] {
+    width: 100px;
+}
+
+input[name="hours"] {
+    width: 40px;
+}
+
+.d-none {
+    display: none!important;
+}
+
+.create-button {
+    left: 40%;
+    position: relative;
 }

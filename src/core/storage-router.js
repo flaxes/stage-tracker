@@ -1,5 +1,11 @@
 const { Router } = require("express");
+const Store = require("./store");
 
+/**
+ * 
+ * @param {Store} storage 
+ * @returns 
+ */
 function storageRouter(storage) {
     const router = Router();
 
@@ -8,15 +14,15 @@ function storageRouter(storage) {
     });
 
     router.post("/create", (req, res) => {
-        res.json(storage.create(req.body));
+        res.json(storage.create(Array.isArray(req.body) ? req.body : [req.body]));
     });
 
     router.post("/update", (req, res) => {
-        res.json(storage.update(req.body));
+        res.json(storage.update(Array.isArray(req.body) ? req.body : [req.body]));
     });
 
     router.post("/delete", (req, res) => {
-        res.json(storage.delete(req.body.ids));
+        res.json(storage.delete(Array.isArray(req.body) ? req.body : req.body.ids));
     });
 
     return router;
