@@ -1,5 +1,3 @@
-// Old method of rendering
-
 class StageTracker {
     constructor(selector) {
         this.selector = selector;
@@ -38,28 +36,33 @@ class StageTracker {
 
     async render(currentWeek) {
         const monday = moment(currentWeek, WEEK_FORMAT);
-        const stagesRes = await requestCached("stages", "GET");
-        const data = await requestCached("task-stage-times", "GET");
+
+        const [stagesRes, data, tasks] = await Promise.all([
+            requestCached("stages", "GET"),
+            requestCached("task-stage-times", "GET"),
+            requestCached("tasks", "GET"),
+        ]);
 
         const stages = Object.values(stagesRes).map((item) => item.name);
+        const tasksArray = Object.values(tasks).sort((a, b) => a.id - b.id);
 
         const { theadColumns, columnDates } = this.getTheadColumns(monday);
         const theadHtml = wrapTag("thead", "", {}, [wrapTag("tr", "", {}, theadColumns)]);
 
         const tbodyRows = [];
 
-        for (const stage of stages) {
-            const cells = [wrapTag("th", stage)];
+        for (const task of tasksArray) {
+            const cells = [wrapTag("th", task.name)];
 
             for (const date of columnDates) {
                 cells.push(
-                    wrapTag("td", "", { id: `cell_${date}_${stage}`, "data-date": date, "data-stage": stage }, [
+                    wrapTag("td", "", { id: `cell_${date}_${task.id}`, "data-date": date, "data-task": task.id }, [
                         wrapTag("button", "+", { class: "create-button" }),
                     ])
                 );
             }
 
-            const tr = wrapTag("tr", "", { id: `${columnDates[0]}-${stage}` }, cells);
+            const tr = wrapTag("tr", "", { id: `${columnDates[0]}-${task}` }, cells);
             tbodyRows.push(tr);
         }
 
@@ -67,9 +70,9 @@ class StageTracker {
         this.dom.insertAdjacentHTML("beforeend", tbodyRows);
 
         this.dom.querySelectorAll(".create-button").forEach((button) => {
-            const { date, stage } = button.parentElement.dataset;
-            button.onclick = (e) => {
-                this.createCell({ date, stage } /* , button.parentElement */);
+            const { date, task } = button.parentElement.dataset;
+            button.onclick = (_e) => {
+                this.createCell({ date, task } /* , button.parentElement */);
             };
         });
 
@@ -80,7 +83,7 @@ class StageTracker {
 
     createCell(row, el) {
         if (!el) {
-            el = this.dom.querySelector(`#cell_${row.date}_${row.stage}`);
+            el = this.dom.querySelector(`#cell_${row.date}_${row.task}`);
         }
 
         if (!el) {
@@ -95,18 +98,18 @@ class StageTracker {
         }
 
         div.innerHTML = [
-            wrapTag("select", "", { name: "task" }),
+            wrapTag("select", "", { name: "stage" }),
             wrapTag("input", "", { type: "number", min: "0", name: "hours" }),
             wrapTag("button", "X", { class: "delete-button" }),
         ].join("");
 
-        const taskSelector = div.querySelector('[name="task"]');
-        if (row.task) {
-            taskSelector.insertAdjacentHTML("afterbegin", wrapTag("option", row.task, { value: row.task }));
-            taskSelector.value = row.task;
-        }
+        const stageSelector = div.querySelector('[name="task"]');
+        /* if (row.task) {
+            stageSelector.insertAdjacentHTML("afterbegin", wrapTag("option", row.task, { value: row.task }));
+            stageSelector.value = row.task;
+        } */
 
-        createRemoteSelector(taskSelector, "tasks", "id", "name");
+        createRemoteSelector(stageSelector, "stages", "name", "name");
 
         const hoursInput = div.querySelector('[name="hours"]');
         if (row.hours) hoursInput.value = row.hours;
@@ -114,13 +117,13 @@ class StageTracker {
         const deleteButton = div.querySelector("button");
 
         const saveAction = () => {
-            const taskSelectorValue = getSelectedOptionValue(taskSelector);
+            const stageSelectorValue = getSelectedOptionValue(stageSelector);
 
             const data = {
                 date: row.date,
-                stage: row.stage,
-                task: taskSelectorValue.text,
-                taskId: Number(taskSelectorValue.value),
+                stage: stageSelectorValue.value,
+                // task: taskSelectorValue.text,
+                taskId: row.task,
                 hours: Number(hoursInput.value),
                 id: Number(div.dataset.id),
             };
@@ -161,7 +164,7 @@ class StageTracker {
         deleteButton.onclick = deleteAction;
 
         hoursInput.addEventListener("change", saveAction);
-        taskSelector.addEventListener("change", saveAction);
+        stageSelector.addEventListener("change", saveAction);
 
         // button.onclick = save;
     }

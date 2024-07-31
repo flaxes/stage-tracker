@@ -8,18 +8,20 @@ class TaskStats {
 
     async render() {
         const stages = await requestCached("stages");
+        const tasks = await requestCached("tasks");
+        const taskTimes = Object.values(await requestCached("task-stage-times"));
 
-        const stageColumns = Object.values(stages);
+        const tasksArray = Object.values(tasks);
+        //tasksArray.sort((a,b) => a.id - b.id);
 
-        const theadItems = [wrapTag("th", "Task"), ...stageColumns.map((item) => wrapTag("th", item.name))];
+        const stagesArray = Object.values(stages);
+
+        const theadItems = [wrapTag("th", "Task"), ...stagesArray.map((item) => wrapTag("th", item.name))];
 
         theadItems.push(wrapTag("th", "Total"));
         const thead = wrapTag("thead", "", {}, theadItems);
 
         this.dom.insertAdjacentHTML("afterbegin", thead);
-
-        const tasks = await requestCached("tasks");
-        const taskTimes = Object.values(await requestCached("task-stage-times"));
 
         const taskGroups = {};
 
@@ -41,18 +43,36 @@ class TaskStats {
         }
 
         const tbodyRows = [];
-        for (const [id, taskTimeTotal] of Object.entries(taskGroups)) {
-            console.log(taskTimeTotal, stageColumns);
-            const columnsValues = stageColumns.map((stage) => taskTimeTotal[stage.name]);
 
-            console.log(columnsValues);
+        // Take "tasks" instead of "taskGroups" due rows order by task creation
 
-            const data = [tasks[id].name, ...columnsValues, taskTimeTotal.total].map((item) => wrapTag("td", item));
+        for (const task of tasksArray.reverse()) {
+            const taskTimeTotal = taskGroups[task.id];
+            if (!taskTimeTotal) continue;
 
-            tbodyRows.push(wrapTag("tr", "", {}, data));
+            const columnsValues = stagesArray.map((stage) => taskTimeTotal[stage.name] || 0);
+            const data = [...columnsValues, taskTimeTotal.total].map((item) => wrapTag("td", item));
+
+            data.unshift(wrapTag("td", "", {}, [wrapTag("input", "", { value: task.name, class: "stat-name" })]));
+
+            tbodyRows.push(wrapTag("tr", "", { "data-id": task.id }, data));
         }
 
         const tbody = wrapTag("tbody", "", {}, tbodyRows);
         this.dom.insertAdjacentHTML("beforeend", tbody);
+        this.dom.querySelectorAll("input.stat-name").forEach((input) => {
+            input.onchange = (e) => {
+                const id = getParent(e.target, 2).dataset.id;
+                const task = tasks[id];
+
+                if (!task) {
+                    alert("Not found task!");
+                    return;
+                }
+                task.name = input.value;
+
+                request("tasks/update", "POST", [task]);
+            };
+        });
     }
 }
