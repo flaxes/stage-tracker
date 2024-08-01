@@ -1,8 +1,13 @@
-function activateCreateStageForm() {
-    const dom = q("#create-stage-section");
+// @ts-check
+if (!moment) var moment = require('./lib/moment');
 
-    const nameInput = dom.querySelector('[name="name"]');
-    dom.querySelector("button").onclick = (e) => {
+function activateCreateStageForm() {
+    const dom = qStrict("#create-stage-section");
+
+    const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
+
+    // @ts-ignore
+    qStrict("button", dom, HTMLButtonElement).onclick = (e) => {
         e.preventDefault();
 
         request("/stages/create", "POST", [{ name: nameInput.value }]).then(() => {
@@ -11,46 +16,72 @@ function activateCreateStageForm() {
     };
 }
 
-function activateCreateTaskForm() {
-    const dom = q("#create-task-section");
+function activateCreateProjectForm() {
+    const dom = qStrict("#create-project-section");
 
-    const nameInput = dom.querySelector('[name="name"]');
-    dom.querySelector("button").onclick = (e) => {
+    const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
+
+    qStrict("button", dom, HTMLButtonElement).onclick = (e) => {
         e.preventDefault();
 
-        request("/tasks/create", "POST", [{ name: nameInput.value }]).then(() => {
+        request("/projects/create", "POST", [{ name: nameInput.value }]).then(() => {
             nameInput.value = "";
         });
     };
 }
 
-function activateCustomStageTimeForm() {
-    const dom = q("#create-custom-stage-time");
+function activateCreateTaskForm() {
+    const dom = qStrict("#create-task-section");
 
-    const dateInput = dom.querySelector('[name="date"]');
-    const taskSelector = dom.querySelector('[name="task"]');
-    const stageSelector = dom.querySelector('[name="stage"]');
-    const hoursInput = dom.querySelector('[name="hours"]');
+    const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
+    const projectSelector = qStrict('[name="project"]', dom, HTMLSelectElement);
 
-    createRemoteSelector(taskSelector, "tasks", "name", "name");
-    createRemoteSelector(stageSelector, "stages", "name", "name");
+    createRemoteSelector(projectSelector, "projects", "id", "name");
 
-    /** @type {HTMLDivElement} */
-    const quickMenuDom = q("#quick-menu-button");
-    quickMenuDom.onclick = () => {
-        q("#quick-menu").classList.toggle("d-none");
-    };
-
-    dom.querySelector("button").onclick = (e) => {
+    qStrict("button", dom, HTMLButtonElement).onclick = (e) => {
         e.preventDefault();
 
+        const project = getSelectedOptionValue(projectSelector);
+        if (!project || !nameInput.value) return;
+
+        request("/tasks/create", "POST", [{ name: nameInput.value, projectId: Number(project.value) }]).then(() => {
+            nameInput.value = "";
+            projectSelector.value = "";
+        });
+    };
+}
+
+function activateCustomStageTimeForm() {
+    const dom = qStrict("#create-custom-stage-time");
+
+    const dateInput = qStrict('[name="date"]', dom, HTMLInputElement);
+    const hoursInput = qStrict('[name="hours"]', dom, HTMLInputElement);
+    const taskSelector = qStrict('[name="task"]', dom, HTMLSelectElement);
+    const stageSelector = qStrict('[name="stage"]', dom, HTMLSelectElement);
+
+    createRemoteSelector(taskSelector, "tasks", "id", "name");
+    createRemoteSelector(stageSelector, "stages", "name", "name");
+
+    const quickMenuDom = qStrict("#quick-menu-button", document, HTMLButtonElement);
+    quickMenuDom.onclick = () => {
+        qStrict("#quick-menu").classList.toggle("d-none");
+    };
+
+    qStrict("button", dom).onclick = (e) => {
+        e.preventDefault();
+        if (!dateInput.value) return;
+
         const taskSelectorValue = getSelectedOptionValue(taskSelector);
+        const stageSelectorValue = getSelectedOptionValue(stageSelector);
+
+        if (!taskSelectorValue || !stageSelectorValue) return;
 
         const data = {
             date: dateInput.value,
-            task: taskSelectorValue.text,
+            dateTs: Number((new Date(dateInput.value).getTime() / 1000).toFixed(0)),
+            // task: taskSelectorValue.text,
             taskId: Number(taskSelectorValue.value),
-            stage: getSelectedOptionValue(stageSelector),
+            stage: stageSelectorValue.value,
             hours: Number(hoursInput.value),
         };
 
@@ -58,9 +89,9 @@ function activateCustomStageTimeForm() {
 
         request("/task-stage-times/create", "POST", [data])
             .then(() => {
-                taskSelector.value = "";
+                /* taskSelector.value = "";
                 stageSelector.value = "";
-                hoursInput.value = 0;
+                hoursInput.value = ""; */
             })
             .catch((err) => {
                 console.error(err);
@@ -69,12 +100,43 @@ function activateCustomStageTimeForm() {
     };
 }
 
-function render() {
+async function render() {
+    const searchWeek = qStrict("#search-week", document, HTMLInputElement);
+    const projectsBar = qStrict("#projects");
     const currentWeek = SEARCH.get("week") || moment().format(WEEK_FORMAT);
+
+    const projects = await requestCached("projects", "GET");
+
+    let projectId = Number(SEARCH.get("project"));
+
+    if (!projects[projectId]) {
+        // console.log("no project");
+        projectId = Number(Object.values(projects)[0].id);
+
+        if (projectId) {
+            return refreshWithNewSearch("project", projectId);
+        }
+    }
+
+    const onProjectClick = (e) => {
+        const id = e.target.dataset.id;
+        if (!id) return;
+
+        refreshWithNewSearch("project", id);
+    };
+
+    const html = Object.values(projects)
+        .sort((a, b) => a.createdAt - b.createdAt)
+        .map((item) => {
+            return wrapTag("a", item.name, { "data-id": item.id, class: "project-select", href: "#" });
+        })
+        .join("");
+
+    projectsBar.insertAdjacentHTML("beforeend", html);
+    projectsBar.querySelectorAll("a").forEach((item) => (item.onclick = onProjectClick));
 
     const m = moment(currentWeek);
 
-    const searchWeek = q("#search-week");
     const doSearch = () => {
         const val = searchWeek.value;
 
@@ -93,17 +155,21 @@ function render() {
         doSearch();
     };
 
-    q(".search-prev").onclick = changeWeek(-1);
-    q(".search-next").onclick = changeWeek(1);
+    qStrict(".search-prev").onclick = changeWeek(-1);
+    qStrict(".search-next").onclick = changeWeek(1);
 
     activateCreateStageForm();
+    activateCreateProjectForm();
     activateCreateTaskForm();
     activateCustomStageTimeForm();
 
-    const stageTracker = new StageTracker("#week-table");
-    const taskStats = new TaskStats("#task-stats-table");
+    if (!projectId) return;
+    const stageTracker = new StageTracker("#week-table", projectId);
+    const stageLogging = new StageLogging("#stage-logging", projectId);
+    const taskStats = new TaskStats("#task-stats-table", projectId);
 
     stageTracker.render(currentWeek);
+    stageLogging.render();
     taskStats.render();
 }
 

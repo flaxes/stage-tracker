@@ -5,13 +5,13 @@ const STORAGE_DIR = "./storage";
 if (!fs.existsSync(STORAGE_DIR)) fs.mkdirSync(STORAGE_DIR);
 
 class Store {
-    constructor(file) {
+    constructor(file, defaults) {
         this.file = file;
         this.filePath = `${STORAGE_DIR}/${this.file}.json`;
 
         this.data = fs.existsSync(this.filePath)
             ? JSON.parse(fs.readFileSync(this.filePath, { encoding: "utf-8" }))
-            : {
+            : defaults || {
                   data: {},
                   lastIndex: 0,
               };

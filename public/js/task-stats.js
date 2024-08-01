@@ -1,9 +1,16 @@
 class TaskStats {
-    constructor(selector) {
+    /**
+     *
+     * @param {string} selector
+     * @param {number} projectId
+     */
+    constructor(selector, projectId) {
         this.selector = selector;
 
         /** @type {HTMLTableElement} */
         this.dom = q(selector);
+
+        this.projectId = projectId;
     }
 
     async render() {
@@ -11,7 +18,7 @@ class TaskStats {
         const tasks = await requestCached("tasks");
         const taskTimes = Object.values(await requestCached("task-stage-times"));
 
-        const tasksArray = Object.values(tasks);
+        const tasksArray = Object.values(tasks).sort((a, b) => (a.name > b.name ? 1 : -1));
         //tasksArray.sort((a,b) => a.id - b.id);
 
         const stagesArray = Object.values(stages);
@@ -46,14 +53,25 @@ class TaskStats {
 
         // Take "tasks" instead of "taskGroups" due rows order by task creation
 
-        for (const task of tasksArray.reverse()) {
-            const taskTimeTotal = taskGroups[task.id];
-            if (!taskTimeTotal) continue;
+        const getHideButton = (isHidden) => {
+            const style = isHidden ? visibleHiddenText.hidden : visibleHiddenText.visible;
+
+            const btn = wrapTag("button", style.txt, { class: style.elClass });
+
+            return btn;
+        };
+
+        for (const task of tasksArray) {
+            if (task.projectId !== this.projectId) continue;
+
+            const taskTimeTotal = taskGroups[task.id] || { total: 0 };
+            // if (!taskTimeTotal) continue;
 
             const columnsValues = stagesArray.map((stage) => taskTimeTotal[stage.name] || 0);
             const data = [...columnsValues, taskTimeTotal.total].map((item) => wrapTag("td", item));
 
             data.unshift(wrapTag("td", "", {}, [wrapTag("input", "", { value: task.name, class: "stat-name" })]));
+            data.push(wrapTag("td", "", { class: "hide-button" }, [getHideButton(task.isHidden)]));
 
             tbodyRows.push(wrapTag("tr", "", { "data-id": task.id }, data));
         }
@@ -70,6 +88,26 @@ class TaskStats {
                     return;
                 }
                 task.name = input.value;
+
+                request("tasks/update", "POST", [task]);
+            };
+        });
+        this.dom.querySelectorAll(".hide-button button").forEach((button) => {
+            button.onclick = (e) => {
+                const id = getParent(e.target, 2).dataset.id;
+
+                const task = tasks[id];
+
+                if (!task) {
+                    alert("Not found task!");
+                    return;
+                }
+                task.isHidden = !task.isHidden;
+
+                const style = task.isHidden ? visibleHiddenText.hidden : visibleHiddenText.visible;
+
+                button.textContent = style.txt;
+                button.className = style.elClass;
 
                 request("tasks/update", "POST", [task]);
             };

@@ -1,6 +1,8 @@
+// @ts-nocheck
+
 // Old method of rendering
 
-class StageTracker {
+class StageTrackerOld {
     constructor(selector) {
         this.selector = selector;
         /** @type {HTMLTableElement} */
@@ -64,7 +66,7 @@ class StageTracker {
         }
 
         this.dom.insertAdjacentHTML("beforeend", theadHtml);
-        this.dom.insertAdjacentHTML("beforeend", tbodyRows);
+        this.dom.insertAdjacentHTML("beforeend", tbodyRows.join(""));
 
         this.dom.querySelectorAll(".create-button").forEach((button) => {
             const { date, stage } = button.parentElement.dataset;

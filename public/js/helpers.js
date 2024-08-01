@@ -156,10 +156,35 @@ function getSelectedOptionValue(dom) {
     return { value: val.value, text: val.innerText };
 }
 
+/**
+ *
+ * @param {string} selector
+ * @returns
+ */
 function q(selector) {
     return document.querySelector(selector);
 }
 
+/**
+ * @template {HTMLElement} T
+ * @param {string} selector
+ * @param {HTMLElement | Document | Element} [fromEl]
+ * @param {new () => T} [type]
+ * @returns {T}
+ */
+function qStrict(selector, fromEl = document, type = HTMLElement) {
+    const el = fromEl.querySelector(selector);
+
+    if (!el) throw new Error(`${selector} not found`);
+
+    return el;
+}
+
+/**
+ *
+ * @param {string} selector
+ * @returns
+ */
 function qq(selector) {
     return document.querySelectorAll(selector);
 }

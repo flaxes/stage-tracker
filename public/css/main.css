@@ -1,3 +1,7 @@
+:root {
+    --menu-width: 200px;
+}
+
 body {
     background-color: grey;
 }
@@ -7,9 +11,10 @@ div {
 }
 
 menu {
-    width: auto;
+    width: var(--menu-width);
     height: 10%;
     display: flex;
+    position: relative;
 }
 
 menu a {
@@ -19,10 +24,79 @@ menu a {
     margin-right: 10px;
     padding: 8px;
     color: #fff;
+
+    display: inline-block;
 }
 
 menu a:hover {
     background-color: #8200aa;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+navbar {
+    padding: 12px;
+}
+
+section {
+    padding: 6px;
+}
+
+thead {
+    background-color: lightgray;
+}
+
+th {
+    padding: 12px;
+
+    background-color: lightgray;
+}
+
+td {
+    padding: 6px;
+}
+
+select[name="task"] {
+    width: 100px;
+}
+
+select[name="stage"] {
+    width: 68px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-indent: 1px;
+    text-overflow: "";
+}
+
+input[name="hours"] {
+    width: 44px;
+    height: 11px;
+}
+
+#projects {
+    max-width: 30vw;
+    /* max-width: 12vw; */
+    display: flex;
+    flex-direction: row;
+
+    margin-bottom: 12px;
+
+    position: absolute;
+    left: calc(var(--menu-width) + 20px);
+
+    overflow-x: auto;
+}
+
+#projects a {
+    background-color: #3c4daf;
+}
+
+#projects a:hover {
+    background-color: #460088;
 }
 
 #quick-menu {
@@ -38,40 +112,159 @@ menu a:hover {
     padding: 2px;
 }
 
-@media screen and (max-width: 1000px) {
+#upper-section {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
 }
 
-thead {
-    background-color: lightgray;
+#task-stats-table {
+    border-collapse: collapse;
 }
 
-th {
-    padding: 12px;
-
-    background-color: lightgray;
+#task-stats-table tr {
+    border: none;
 }
 
-tr {
+#task-stats-table tr:nth-child(odd) {
+    background-color: #d7d7d7;
+}
+
+#task-stats-table td {
+    border: #000 1px solid;
+
+    text-align: center;
+}
+
+#week-table {
+    height: min-content;
+}
+
+#week-table tr {
     outline: #000000 1px solid;
 }
 
-td {
-    padding: 6px;
+#week-table .cell {
+    margin-top: 6px;
 }
 
-select[name="task"] {
-    width: 100px;
+#week-table .task-name {
+    text-wrap: pretty;
+    text-wrap-mode: wrap;
+
+    width: 200px;
+    font-size: small;
 }
 
-input[name="hours"] {
-    width: 40px;
+#week-table .delete-button {
+    border: 1px solid #000;
+    border-radius: 8cm;
+    text-align: center;
+    font-size: x-small;
+    font-weight: 600;
+    padding: 1px 4px;
+}
+
+#stage-logging {
+    padding: 20px;
+    display: inline-block;
+
+    overflow-y: scroll;
+
+    /* height: 400px; */
+
+    width: 300px;
+    
+    height: 50vh;
+
+    text-align: center;
+}
+
+#stage-logging .row {
+    padding-bottom: 12px;
+}
+
+#stage-logging button {
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+#stage-logging span {
+    padding-right: 12px;
+    display: inline-block;
+}
+
+#stage-logging span:last-child {
+    padding-right: unset;
+    text-align: end;
+}
+
+#stage-logging .task-name {
+    width: 120px;
+
+    font-size: smaller;
+
+    text-wrap: pretty;
+}
+
+#stage-logging .stage-date {
+    margin-bottom: 8px;
+    border-top: 1px dotted #000;
+    font-weight: 600;
 }
 
 .d-none {
-    display: none!important;
+    display: none !important;
 }
 
 .create-button {
     left: 40%;
     position: relative;
+}
+
+.button-visible-toggle {
+    background-color: #00ff00;
+}
+
+.button-visible-toggle.hidden-state {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+/** Tooltip */
+.tooltip {
+    border-bottom: 1px dotted black;
+    max-height: 40px;
+    height: 40px;
+}
+.tooltip div {
+    background-color: unset;
+}
+
+/* Tooltip text */
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip-top {
+    margin-left: -60px;
+    margin-top: -28px;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+}
+
+@media screen and (max-width: 1000px) {
 }

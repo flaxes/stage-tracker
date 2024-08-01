@@ -1,13 +1,26 @@
+if (!moment) var moment = require('./lib/moment');
+
 class StageTracker {
-    constructor(selector) {
+    /**
+     *
+     * @param {string} selector
+     * @param {number} projectId
+     */
+    constructor(selector, projectId) {
         this.selector = selector;
         /** @type {HTMLTableElement} */
-        this.dom = q(selector);
+        this.dom = qStrict(selector);
 
         this.days = [];
         this.stages = [];
+        this.projectId = projectId;
     }
 
+    /**
+     *
+     * @param {import('moment-timezone').Moment} monday
+     * @returns
+     */
     getTheadColumns(monday) {
         const columnDays = [];
         const columnDates = [];
@@ -16,10 +29,16 @@ class StageTracker {
 
         for (let i = 0; i < 7; i++) {
             const dayName = WEEKDAY[monday.get("day")];
+            const date = monday.format(DATE_ISO_FORMAT);
 
-            theadColumns.push(wrapTag("th", dayName));
+            theadColumns.push(
+                wrapTag("th", "", { class: "tooltip" }, [
+                    wrapTag("span", monday.toDate().toLocaleDateString(), { class: "tooltip-text tooltip-top" }),
+                    wrapTag("div", dayName),
+                ])
+            );
             columnDays.push(dayName);
-            columnDates.push(monday.format(DATE_ISO_FORMAT));
+            columnDates.push(date);
             monday.add(1, "day");
         }
 
@@ -37,14 +56,14 @@ class StageTracker {
     async render(currentWeek) {
         const monday = moment(currentWeek, WEEK_FORMAT);
 
-        const [stagesRes, data, tasks] = await Promise.all([
-            requestCached("stages", "GET"),
+        const [data, tasks] = await Promise.all([
             requestCached("task-stage-times", "GET"),
             requestCached("tasks", "GET"),
         ]);
 
-        const stages = Object.values(stagesRes).map((item) => item.name);
-        const tasksArray = Object.values(tasks).sort((a, b) => a.id - b.id);
+        const tasksArray = Object.values(tasks).sort((a, b) => {
+            return a.name > b.name ? 1 : -1;
+        });
 
         const { theadColumns, columnDates } = this.getTheadColumns(monday);
         const theadHtml = wrapTag("thead", "", {}, [wrapTag("tr", "", {}, theadColumns)]);
@@ -52,27 +71,35 @@ class StageTracker {
         const tbodyRows = [];
 
         for (const task of tasksArray) {
-            const cells = [wrapTag("th", task.name)];
+            if (task.projectId !== this.projectId) continue;
+
+            const cells = [wrapTag("th", task.name, { class: "task-name" })];
 
             for (const date of columnDates) {
                 cells.push(
-                    wrapTag("td", "", { id: `cell_${date}_${task.id}`, "data-date": date, "data-task": task.id }, [
+                    wrapTag("td", "", { id: `cell_${date}_${task.id}`, "data-date": date, "data-task-id": task.id }, [
                         wrapTag("button", "+", { class: "create-button" }),
                     ])
                 );
             }
 
-            const tr = wrapTag("tr", "", { id: `${columnDates[0]}-${task}` }, cells);
+            const tr = wrapTag(
+                "tr",
+                "",
+                { id: `row_${task.id}`, class: `row${task.isHidden ? " d-none" : ""}` },
+                cells
+            );
+
             tbodyRows.push(tr);
         }
 
         this.dom.insertAdjacentHTML("beforeend", theadHtml);
-        this.dom.insertAdjacentHTML("beforeend", tbodyRows);
+        this.dom.insertAdjacentHTML("beforeend", wrapTag("tbody", "", {}, tbodyRows));
 
         this.dom.querySelectorAll(".create-button").forEach((button) => {
-            const { date, task } = button.parentElement.dataset;
+            const { date, taskId } = button.parentElement.dataset;
             button.onclick = (_e) => {
-                this.createCell({ date, task } /* , button.parentElement */);
+                this.createCell({ date, taskId } /* , button.parentElement */);
             };
         });
 
@@ -81,9 +108,15 @@ class StageTracker {
         }
     }
 
+    /**
+     *
+     * @param {object} row
+     * @param {HTMLElement} [el]
+     * @returns
+     */
     createCell(row, el) {
         if (!el) {
-            el = this.dom.querySelector(`#cell_${row.date}_${row.task}`);
+            el = this.dom.querySelector(`#cell_${row.date}_${row.taskId}`);
         }
 
         if (!el) {
@@ -92,22 +125,26 @@ class StageTracker {
 
         const div = document.createElement("div");
         el.append(div);
+        div.className = "cell";
+
+        el.parentElement.classList.remove("d-none");
 
         if (row.id) {
             div.dataset.id = row.id;
         }
 
         div.innerHTML = [
-            wrapTag("select", "", { name: "stage" }),
+            wrapTag("div", "", {}, [wrapTag("select", "", { name: "stage" })]),
+
             wrapTag("input", "", { type: "number", min: "0", name: "hours" }),
             wrapTag("button", "X", { class: "delete-button" }),
         ].join("");
 
-        const stageSelector = div.querySelector('[name="task"]');
-        /* if (row.task) {
-            stageSelector.insertAdjacentHTML("afterbegin", wrapTag("option", row.task, { value: row.task }));
-            stageSelector.value = row.task;
-        } */
+        const stageSelector = div.querySelector('[name="stage"]');
+        if (row.stage) {
+            stageSelector.insertAdjacentHTML("afterbegin", wrapTag("option", row.stage, { value: row.stage }));
+            stageSelector.value = row.stage;
+        }
 
         createRemoteSelector(stageSelector, "stages", "name", "name");
 
@@ -121,9 +158,10 @@ class StageTracker {
 
             const data = {
                 date: row.date,
+                dateTs: Number((new Date(row.date).getTime() / 1000).toFixed(0)),
                 stage: stageSelectorValue.value,
                 // task: taskSelectorValue.text,
-                taskId: row.task,
+                taskId: row.taskId,
                 hours: Number(hoursInput.value),
                 id: Number(div.dataset.id),
             };

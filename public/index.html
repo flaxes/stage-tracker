@@ -10,93 +10,121 @@
     <link rel="stylesheet" href="/css/main.css" />
 
     <script src="/js/lib/moment.js"></script>
+    <script src="/js/constants.js"></script>
     <script src="/js/helpers.js"></script>
-    <script src="/js/stage-tracker.js"></script>
+    <script src="/js/stage-tracker-by-task.js"></script>
+    <script src="/js/stage-logging.js"></script>
+    <script src="/js/stage-history.js"></script>
     <script src="/js/task-stats.js"></script>
 
 </head>
 
 <body>
     <menu>
-        <a href="/">Home</a>
+        <a href="#" onclick="window.location.reload()">Refresh</a>
         <a href="#" id="quick-menu-button">Quick menu</a>
         <!-- <a href="/tasks.html" t=" tasks"></a>
             <a href="/history.html" t=" history"></a> -->
-        <a href="#" class="update-action" hidden>Update</a>
+        <a href="#" class="update-action d-none">Update</a>
+
+        <span id="projects"></span>
     </menu>
+    <main>
+        <navbar></navbar>
 
-    <div id="quick-menu" class="d-none" hidden>
-        <div id="create-custom-stage-time">
-            <div>Add custom time</div>
+        <section>
 
-            <div>
+            <div id="quick-menu" class="d-none">
+                <div id="create-custom-stage-time">
+                    <div>Add custom time</div>
 
-                <div>Date</div>
-                <input type="date" name="date">
+                    <div>
+
+                        <div>Date</div>
+                        <input type="date" name="date">
+                    </div>
+                    <div>
+
+                        <div>Task</div>
+                        <select name="task"></select>
+                    </div>
+
+                    <div>
+                        <div>Stage</div>
+                        <select name="stage"></select>
+                    </div>
+
+                    <div>
+                        <div>Hours</div>
+                        <input type="number" min="0" name="hours">
+                    </div>
+
+                    <button>Add</button>
+
+                </div>
+
+                <div id="create-project-section">
+                    <div>Create project</div>
+
+                    <div>
+                        <div>Project name</div>
+                        <input type="text" name="name" autocomplete="off">
+
+                        <button>Create</button>
+                    </div>
+                </div>
+
+                <div id="create-task-section">
+                    <div>Create task</div>
+
+                    <div>
+
+                        <div>Project</div>
+                        <select name="project"></select>
+                    </div>
+
+                    <div>
+                        <div>Task name</div>
+                        <input type="text" name="name" autocomplete="off">
+
+                        <button>Create</button>
+                    </div>
+                </div>
+
+                <div id="create-stage-section">
+                    <div>Create stage</div>
+
+                    <div>
+                        <div>Stage name</div>
+                        <input type="text" name="name" autocomplete="off">
+
+                        <button>Create</button>
+                    </div>
+                </div>
             </div>
-            <div>
 
-                <div>Task name</div>
-                <select name="task"></select>
+            <div id="pagination">
+                <h2>Stage tracker</h2>
+
+                <button class="search-prev">Prev</button>
+                <button class="search-next">Next</button>
+
+                <input type="week" name="week" id="search-week" required />
             </div>
 
-            <div>
-                <div>Stage</div>
-                <select name="stage"></select>
+            <div id="upper-section">
+                <table id="week-table"></table>
+                <div id="stage-logging"></div>
             </div>
 
-            <div>
-                <div>Hours</div>
-                <input type="number" min="0" name="hours">
+            <div id="task-stats">
+                <h2>Stats</h2>
+                <table id="task-stats-table"></table>
             </div>
+        </section>
 
-            <button>Add</button>
+    </main>
 
-        </div>
-
-        <div id="create-task-section">
-            <div>Create task</div>
-
-            <div>
-                <div>Task name</div>
-                <input type="text" name="name" autocomplete="off">
-
-                <button>Create</button>
-            </div>
-        </div>
-
-        <div id="create-stage-section">
-            <div>Create stage</div>
-
-            <div>
-                <div>Stage name</div>
-                <input type="text" name="name" autocomplete="off">
-
-                <button>Create</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="pagination">
-        <h2>Stage tracker</h2>
-
-        <button class="search-prev">Prev</button>
-        <button class="search-next">Next</button>
-
-        <input type="week" name="week" id="search-week" required />
-    </div>
-
-    <div id="week-tracker">
-        <table id="week-table">
-
-        </table>
-    </div>
-
-    <div id="task-stats">
-        <h2>Stats</h2>
-        <table id="task-stats-table">
-        </table>
-    </div>
 
     <script src="/js/main.js"></script>
 </body>
