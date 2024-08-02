@@ -11,7 +11,7 @@ class Updater {
     #version;
     #available;
     constructor() {
-        this.#version = fs.readFileSync("./version").toString().replace(/\r/g, "").split("\n")[0];
+        this.#version = Number(fs.readFileSync("./version").toString().replace(/\r/g, "").split("\n")[0]);
     }
 
     getVersion() {
@@ -25,9 +25,9 @@ class Updater {
             return "";
         });
 
-        this.#available = this.#available.split("\n")[0];
+        this.#available = Number(this.#available.split("\n")[0]);
 
-        return this.#available !== this.#version;
+        return this.#available > this.#version;
     }
 
     update() {
