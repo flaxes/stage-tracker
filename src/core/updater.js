@@ -4,7 +4,7 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 const got = require("got-cjs").default;
 
-const UPDATE_URL = "https://raw.githubusercontent.com/flaxes/kotya-timetracker/master/version";
+const UPDATE_URL = "https://raw.githubusercontent.com/flaxes/stage-tracker/master/version";
 const logger = console;
 
 class Updater {
