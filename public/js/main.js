@@ -45,8 +45,8 @@ function activateCreateTaskForm() {
         if (!project || !nameInput.value) return;
 
         request("/tasks/create", "POST", [{ name: nameInput.value, projectId: Number(project.value) }]).then(() => {
-            nameInput.value = "";
-            projectSelector.value = "";
+            // nameInput.value = "";
+            // projectSelector.value = "";
         });
     };
 }

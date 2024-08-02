@@ -19,7 +19,7 @@ class StageLogging {
 
         const timesArray = Object.values(stageTimes).sort((a, b) => a.dateTs - b.dateTs);
 
-        this.dom.insertAdjacentHTML("beforeend", wrapTag("button", "copy"));
+        this.dom.insertAdjacentHTML("beforeend", wrapTag("div", "", {}, [wrapTag("button", "copy")]));
 
         const elements = [];
 
@@ -37,8 +37,23 @@ class StageLogging {
 
             if (!lastDate || lastDate !== row.date) {
                 lastDate = row.date;
-                elements.push(wrapTag("div", lastDate, { class: "stage-date" }));
+                const m = moment(lastDate);
+                const currentWeek = `${m.year()}-${m.isoWeek()}`;
+
+                if (!lastWeek) {
+                    lastWeek = currentWeek;
+                } else if (currentWeek !== lastWeek) {
+                    lastWeek = currentWeek;
+                    elements.push(wrapTag("div", "WEEK", { class: "stage-week" }));
+                }
+
+                elements.push(wrapTag("div", m.toDate().toLocaleDateString(), { class: "stage-date" }));
+
+                if (this.txt) this.txt += "\n";
+                this.txt += `${lastDate}\n`;
             }
+
+            this.txt += `${task.name} ${row.stage} ${row.hours}h\n`;
 
             elements.push(
                 wrapTag("div", "", { class: "row" }, [

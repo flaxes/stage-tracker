@@ -42,14 +42,6 @@ class StageTracker {
             monday.add(1, "day");
         }
 
-        /* const theadColumns = [wrapTag("th", "#"), wrapTag("th", monday.format(DATE_FORMAT))];
-
-        for (let i = 0; i < 6; i++) {
-            const dayName = monday.add(1, "d").format(DATE_FORMAT);
-
-            theadColumns.push(wrapTag("th", dayName));
-        } */
-
         return { theadColumns, columnDays, columnDates };
     }
 
@@ -134,7 +126,7 @@ class StageTracker {
         }
 
         div.innerHTML = [
-            wrapTag("div", "", {}, [wrapTag("select", "", { name: "stage" })]),
+            wrapTag("select", "", { name: "stage" }),
 
             wrapTag("input", "", { type: "number", min: "0", name: "hours" }),
             wrapTag("button", "X", { class: "delete-button" }),

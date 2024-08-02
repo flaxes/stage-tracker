@@ -27,14 +27,6 @@ class StageTrackerOld {
             monday.add(1, "day");
         }
 
-        /* const theadColumns = [wrapTag("th", "#"), wrapTag("th", monday.format(DATE_FORMAT))];
-
-        for (let i = 0; i < 6; i++) {
-            const dayName = monday.add(1, "d").format(DATE_FORMAT);
-
-            theadColumns.push(wrapTag("th", dayName));
-        } */
-
         return { theadColumns, columnDays, columnDates };
     }
 

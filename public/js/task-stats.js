@@ -27,12 +27,19 @@ class TaskStats {
 
         theadItems.push(wrapTag("th", "Total"));
         const thead = wrapTag("thead", "", {}, theadItems);
+        const taskGroups = {};
+        let total = 0;
+        let totalProject = 0;
 
         this.dom.insertAdjacentHTML("afterbegin", thead);
 
-        const taskGroups = {};
-
         for (const taskTime of taskTimes) {
+            total += taskTime.hours;
+
+            if (tasks[taskTime.taskId].projectId !== this.projectId) {
+                continue;
+            }
+
             if (!taskGroups[taskTime.taskId]) {
                 taskGroups[taskTime.taskId] = {
                     total: 0,
@@ -47,9 +54,13 @@ class TaskStats {
 
             taskTimeTotal[taskTime.stage] += taskTime.hours;
             taskTimeTotal.total += taskTime.hours;
+
+            totalProject += taskTime.hours;
         }
 
         const tbodyRows = [];
+
+        console.log(taskGroups);
 
         // Take "tasks" instead of "taskGroups" due rows order by task creation
 
@@ -70,15 +81,22 @@ class TaskStats {
             const columnsValues = stagesArray.map((stage) => taskTimeTotal[stage.name] || 0);
             const data = [...columnsValues, taskTimeTotal.total].map((item) => wrapTag("td", item));
 
-            data.unshift(wrapTag("td", "", {}, [wrapTag("input", "", { value: task.name, class: "stat-name" })]));
+            data.unshift(wrapTag("td", "", {}, [wrapTag("input", "", { value: task.name, class: "task-name" })]));
             data.push(wrapTag("td", "", { class: "hide-button" }, [getHideButton(task.isHidden)]));
 
             tbodyRows.push(wrapTag("tr", "", { "data-id": task.id }, data));
         }
 
         const tbody = wrapTag("tbody", "", {}, tbodyRows);
+
+        const totalH2 = q("#task-stats-total");
+
+        if (totalH2) {
+            totalH2.textContent = `Overall: ${total}h | Project total: ${totalProject}h`;
+        }
+
         this.dom.insertAdjacentHTML("beforeend", tbody);
-        this.dom.querySelectorAll("input.stat-name").forEach((input) => {
+        this.dom.querySelectorAll("input.task-name").forEach((input) => {
             input.onchange = (e) => {
                 const id = getParent(e.target, 2).dataset.id;
                 const task = tasks[id];

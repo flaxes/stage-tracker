@@ -115,7 +115,10 @@ input[name="hours"] {
 #upper-section {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 100%;;
+
+    /* overflow-y: auto;
+    max-height: 50%; */
 }
 
 #task-stats-table {
@@ -136,8 +139,18 @@ input[name="hours"] {
     text-align: center;
 }
 
+#task-stats-table .task-name {
+    width: 340px;
+}
+
 #week-table {
     height: min-content;
+}
+
+#week-table th:not(:first-child) {
+    max-width: 80px;
+    width: 80px;
+    height: 16px;
 }
 
 #week-table tr {
@@ -146,6 +159,7 @@ input[name="hours"] {
 
 #week-table .cell {
     margin-top: 6px;
+    text-align: center;
 }
 
 #week-table .task-name {
@@ -167,17 +181,24 @@ input[name="hours"] {
 
 #stage-logging {
     padding: 20px;
-    display: inline-block;
 
     overflow-y: scroll;
-
-    /* height: 400px; */
-
-    width: 300px;
     
-    height: 50vh;
+    width: 500px;
+    height: 90vh;
 
+    text-align: start;
+}
+
+#stage-logging :first-child {
+    width: 100%;
+    margin-bottom: 10px;
+    height: 20px;
     text-align: center;
+}
+
+#stage-logging :first-child button {
+    width: 60px;
 }
 
 #stage-logging .row {
@@ -200,7 +221,7 @@ input[name="hours"] {
 }
 
 #stage-logging .task-name {
-    width: 120px;
+    width: 300px;
 
     font-size: smaller;
 
@@ -217,18 +238,30 @@ input[name="hours"] {
     display: none !important;
 }
 
+.d-block {
+    display: block;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.w-100 {
+    width: 100%;
+}
+
 .create-button {
     left: 40%;
     position: relative;
 }
 
 .button-visible-toggle {
-    background-color: #00ff00;
+    background-color: #98eb7f;
 }
 
 .button-visible-toggle.hidden-state {
-    background-color: #ff0000;
-    color: #ffffff;
+    background-color: #8082f8;
+    /* color: #ffffff; */
 }
 
 /** Tooltip */

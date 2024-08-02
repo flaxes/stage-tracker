@@ -1,9 +1,8 @@
 const BACKEND_PREFIX = "/api";
 const SEARCH = new URL(document.location).searchParams;
-const DATE_FORMAT = "DD-MM-yyyy";
 const DATE_ISO_FORMAT = "yyyy-MM-DD";
 const TIME_FORMAT = "HH:mm";
-const DATE_TIME_FORMAT = "DD-MM-yyyy HH:mm:ss";
+
 const WEEKDAY = {
     1: "monday",
     2: "tuesday",

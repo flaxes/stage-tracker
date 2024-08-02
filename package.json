@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
+    "got-cjs": "^12.5.4",
     "moment-timezone": "^0.5.45"
   }
 }
