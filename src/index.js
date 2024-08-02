@@ -11,7 +11,7 @@ async function main() {
     if (isNewVersionAvailable) {
         console.log("NEW VERSION AVAILABLE! Downloading...");
 
-        await updater.update();
+        updater.update();
 
         console.log("UPDATED! Please restart program. Auto-exit in 5 seconds...");
 

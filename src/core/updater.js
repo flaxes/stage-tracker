@@ -1,7 +1,7 @@
 // @ts-check
 
 const fs = require("fs");
-const { spawn } = require("child_process");
+const { spawnSync } = require("child_process");
 const got = require("got-cjs").default;
 
 const UPDATE_URL = "https://raw.githubusercontent.com/flaxes/stage-tracker/master/version";
@@ -20,7 +20,7 @@ class Updater {
 
     async checkAvailable() {
         this.#available = await got.get(UPDATE_URL, { resolveBodyOnly: true, responseType: "text" }).catch((err) => {
-            logger.error('UPDATER', err);
+            logger.error("UPDATER", err);
 
             return "";
         });
@@ -31,15 +31,12 @@ class Updater {
     }
 
     update() {
-        spawn("start", ["cmd.exe", "/c", "UPDATE.bat"], {
+        spawnSync("start", ["cmd.exe", "/c", "UPDATE.bat"], {
             windowsHide: false,
             cwd: "./",
             // stdio: "ignore",
-            detached: true,
             shell: "cmd",
         });
-
-        process.exit(0);
     }
 }
 
