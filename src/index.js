@@ -3,7 +3,7 @@ const path = require("path");
 const app = require("./core/server");
 const apiRouter = require("./router");
 const updater = require("./core/updater");
-const { port } = require("../config");
+const { port, updaterEnabled } = require("../config");
 const { isEnvTrue } = require("./core/helpers");
 
 const DEBUG = isEnvTrue("DEBUG");
@@ -11,21 +11,23 @@ const IS_ELECTRON = isEnvTrue("ELECTRON");
 const IS_BUILT = __dirname.endsWith("app.asar\\src");
 
 async function main() {
-    /* const isNewVersionAvailable = await updater.checkAvailable();
+    if (updaterEnabled) {
+        const isNewVersionAvailable = await updater.checkAvailable();
 
-    if (isNewVersionAvailable) {
-        console.log("NEW VERSION AVAILABLE! Downloading...");
+        if (isNewVersionAvailable) {
+            console.log("NEW VERSION AVAILABLE! Downloading...");
 
-        updater.update();
+            updater.update();
 
-        console.log("UPDATED! Please restart program. Auto-exit in 5 seconds...");
+            console.log("UPDATED! Please restart program. Auto-exit in 5 seconds...");
 
-        setTimeout(() => {
-            process.exit(0);
-        }, 5e3);
+            setTimeout(() => {
+                process.exit(0);
+            }, 5e3);
 
-        return;
-    } */
+            return;
+        }
+    }
 
     let publicPath = "../public";
     if (IS_BUILT) {
