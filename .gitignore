@@ -1,3 +1,5 @@
 node_modules
 logs
 storage
+config.js
+out/

@@ -1,5 +1,5 @@
 // @ts-check
-if (!moment) var moment = require('./lib/moment');
+if (!moment) var moment = require("./lib/moment");
 
 function activateCreateStageForm() {
     const dom = qStrict("#create-stage-section");
@@ -111,10 +111,14 @@ async function render() {
 
     if (!projects[projectId]) {
         // console.log("no project");
-        projectId = Number(Object.values(projects)[0].id);
+        const projectsVals = Object.values(projects);
 
-        if (projectId) {
-            return refreshWithNewSearch("project", projectId);
+        if (projectsVals.length) {
+            projectId = Number(projectsVals[0].id);
+
+            if (projectId) {
+                return refreshWithNewSearch("project", projectId);
+            }
         }
     }
 

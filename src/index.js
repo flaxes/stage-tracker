@@ -1,12 +1,17 @@
 const express = require("express");
+const path = require("path");
 const app = require("./core/server");
 const apiRouter = require("./router");
 const updater = require("./core/updater");
+const { port } = require("../config");
+const { isEnvTrue } = require("./core/helpers");
 
-const DEBUG = ["1", "true", "y"].includes(process.env.DEBUG || "");
+const DEBUG = isEnvTrue("DEBUG");
+const IS_ELECTRON = isEnvTrue("ELECTRON");
+const IS_BUILT = __dirname.endsWith("app.asar\\src");
 
 async function main() {
-    const isNewVersionAvailable = await updater.checkAvailable();
+    /* const isNewVersionAvailable = await updater.checkAvailable();
 
     if (isNewVersionAvailable) {
         console.log("NEW VERSION AVAILABLE! Downloading...");
@@ -20,15 +25,22 @@ async function main() {
         }, 5e3);
 
         return;
+    } */
+
+    let publicPath = "../public";
+    if (IS_BUILT) {
+        publicPath = "../" + publicPath;
+        console.log("Running build");
     }
 
-    app.use(express.static("public"));
+    const fullPublicPath = path.join(__dirname, publicPath);
+    app.use(express.static(fullPublicPath));
 
     app.use("/api", apiRouter);
 
-    app.listen(3000, () => {
-        console.log("Server started http://localhost:3000");
+    app.listen(port, () => {
+        console.log(`Backend started http://localhost:${port}\n${fullPublicPath}`);
     });
 }
 
-main().catch((err) => console.error("FATAL", err));
+module.exports = main;

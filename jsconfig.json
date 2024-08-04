@@ -9,6 +9,6 @@
         "skipLibCheck": true,
         "outDir": "./build"
     },
-    "include": ["src/**/*", "types/**/*", "test.js"],
+    "include": ["src/**/*", "types/**/*", "test.js", "config.js"],
     "exclude": ["build"]
 }
