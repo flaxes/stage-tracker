@@ -17,11 +17,60 @@ class StageHistory {
             taskId = Number(taskId);
         }
 
-        const allTaskTimes = await requestCached("task-stage-times", "GET");
+        const [allTaskTimes, stages] = await Promise.all([
+            requestCached("task-stage-times", "GET"),
+            requestCached("stages", "GET"),
+        ]);
+
+        const stageGroups = {};
+        for (const stageId in stages) {
+            stageGroups[stageId] = [];
+        }
 
         for (const id in allTaskTimes) {
             const taskTime = allTaskTimes[id];
             if (taskTime.taskId !== taskId) continue;
+
+            const m = moment(taskTime.date);
+            const localDate = m.toDate().toLocaleDateString();
+
+            stageGroups[taskTime.stageId].push(
+                wrapTag("span", "", { class: "tooltip" }, [
+                    wrapTag("span", localDate, { class: "tooltip-text tooltip-top" }),
+                    wrapTag("div", taskTime.hours),
+                ])
+            );
+        }
+
+        
+        let tooltipMargin;
+        const onMouseOver = (e) => {
+            const text = e.currentTarget.children[0];
+            const parent = e.currentTarget.parentElement;
+
+            if (!tooltipMargin && tooltipMargin !== 0) {
+                console.log(123);
+                tooltipMargin = Number(getComputedStyle(text)["margin-left"].slice(0, -2));
+            }
+
+            if (parent.scrollLeft) {
+                text.style["margin-left"] = -parent.scrollLeft + tooltipMargin + "px";
+            }
+        };
+
+        for (const stageId in stageGroups) {
+            const stageTimes = stageGroups[stageId];
+
+            const stageDom = qStrict(`tr[data-id="${stageId}"]`, this.dom);
+
+            stageDom.innerHTML = wrapTag("tr", "", { "data-id": stageId }, [
+                wrapTag("th", stages[stageId].name),
+                wrapTag("td", "", {}, [wrapTag("div", "", { class: "times" }, stageTimes)]),
+            ]);
+
+            stageDom.querySelectorAll(".tooltip").forEach((item) => {
+                item.onmouseover = onMouseOver;
+            });
         }
     }
 
@@ -32,8 +81,11 @@ class StageHistory {
         //tasksArray.sort((a,b) => a.id - b.id);
 
         const theadItems = [
-            wrapTag("th", "Stage"),
-            wrapTag("th", "", {}, [wrapTag("div", "Task"), wrapTag("select", "", { class: "task-select" })]),
+            wrapTag("th", "Stage", { class: "stage-column" }),
+            wrapTag("th", "", { class: "hours-column" }, [
+                wrapTag("div", "Task"),
+                wrapTag("select", "", { class: "task-select" }),
+            ]),
         ];
 
         const thead = wrapTag("thead", "", {}, theadItems);

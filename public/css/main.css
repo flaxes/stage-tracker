@@ -1,5 +1,6 @@
 :root {
     --menu-width: 200px;
+    --even-background: #d7d7d7;
 }
 
 body {
@@ -123,26 +124,30 @@ input[name="hours"] {
 
 #lower-section {
     display: flex;
+    justify-content: space-around;
     flex-direction: row;
     width: 100%;
 }
 
 #task-stats-table {
-    border-collapse: collapse;
+    width: auto;
+    height: min-content;
 }
 
 #task-stats-table tr {
     border: none;
+    position: relative;
 }
 
 #task-stats-table tr:nth-child(odd) {
-    background-color: #d7d7d7;
+    background-color: var(--even-background);
 }
 
 #task-stats-table td {
     border: #000 1px solid;
 
     text-align: center;
+    position: relative;
 }
 
 #task-stats-table .task-name {
@@ -157,10 +162,6 @@ input[name="hours"] {
     max-width: 80px;
     width: 80px;
     height: 16px;
-}
-
-#week-table tr {
-    outline: #000000 1px solid;
 }
 
 #week-table .cell {
@@ -187,8 +188,6 @@ input[name="hours"] {
 
 #stage-logging {
     padding: 20px;
-
-    overflow-y: scroll;
 
     width: 500px;
     height: 90vh;
@@ -244,6 +243,45 @@ input[name="hours"] {
     text-align: center;
 }
 
+#stage-history {
+    table-layout: fixed;
+    width: 40%;
+
+    font-size: larger;
+    height: min-content;
+    padding: 2px;
+}
+
+/* #stage-history .hours-column {
+    max-width: 90%;
+} */
+
+#stage-history .stage-column {
+    width: 56px;
+}
+
+#stage-history tbody tr td {
+    border-top: 1px solid #000;
+}
+
+/* #stage-history tr:nth-child(odd) {
+    background-color: var(--even-background);
+} */
+
+#stage-history .times {
+    display: flex;
+    background-color: unset;
+    overflow-x: auto;
+}
+
+#stage-history .times .tooltip {
+    margin-right: 13px;
+}
+
+#stage-history select {
+    width: 100%;
+}
+
 .d-none {
     display: none !important;
 }
@@ -264,6 +302,11 @@ input[name="hours"] {
     width: 100%;
 }
 
+.table-border {
+    border: 2px solid #000;
+    border-radius: 12px;
+}
+
 .create-button {
     left: 40%;
     position: relative;
@@ -280,10 +323,10 @@ input[name="hours"] {
 
 /** Tooltip */
 .tooltip {
-    border-bottom: 1px dotted black;
     max-height: 40px;
-    height: 40px;
+    cursor: default;
 }
+
 .tooltip div {
     background-color: unset;
 }
@@ -300,7 +343,7 @@ input[name="hours"] {
 
     /* Position the tooltip text - see examples below! */
     position: absolute;
-    z-index: 1;
+    z-index: 999;
 }
 
 .tooltip-top {
