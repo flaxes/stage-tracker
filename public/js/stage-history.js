@@ -49,7 +49,6 @@ class StageHistory {
             const parent = e.currentTarget.parentElement;
 
             if (!tooltipMargin && tooltipMargin !== 0) {
-                console.log(123);
                 tooltipMargin = Number(getComputedStyle(text)["margin-left"].slice(0, -2));
             }
 
