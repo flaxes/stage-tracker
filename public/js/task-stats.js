@@ -14,9 +14,13 @@ class TaskStats {
     }
 
     async render() {
-        const stages = await requestCached("stages");
-        const tasks = await requestCached("tasks");
-        const taskTimes = Object.values(await requestCached("task-stage-times"));
+        const [stages, tasks, taskTimesObj] = await Promise.all([
+            requestCached("stages"),
+            requestCached("tasks"),
+            requestCached("task-stage-times"),
+        ]);
+
+        const taskTimes = Object.values(taskTimesObj);
 
         const tasksArray = Object.values(tasks).sort((a, b) => (a.name > b.name ? 1 : -1));
         //tasksArray.sort((a,b) => a.id - b.id);
@@ -28,10 +32,21 @@ class TaskStats {
         theadItems.push(wrapTag("th", "Total"));
         const thead = wrapTag("thead", "", {}, theadItems);
         const taskGroups = {};
+        const tbodyRows = [];
+
         let total = 0;
         let totalProject = 0;
 
         this.dom.insertAdjacentHTML("afterbegin", thead);
+
+        // Take "tasks" instead of "taskGroups" due rows order by task creation
+        const getHideButton = (isHidden) => {
+            const style = isHidden ? visibleHiddenText.hidden : visibleHiddenText.visible;
+
+            const btn = wrapTag("button", style.txt, { class: style.elClass });
+
+            return btn;
+        };
 
         for (const taskTime of taskTimes) {
             total += taskTime.hours;
@@ -48,29 +63,15 @@ class TaskStats {
 
             const taskTimeTotal = taskGroups[taskTime.taskId];
 
-            if (!taskTimeTotal[taskTime.stage]) {
-                taskTimeTotal[taskTime.stage] = 0;
+            if (!taskTimeTotal[taskTime.stageId]) {
+                taskTimeTotal[taskTime.stageId] = 0;
             }
 
-            taskTimeTotal[taskTime.stage] += taskTime.hours;
+            taskTimeTotal[taskTime.stageId] += taskTime.hours;
             taskTimeTotal.total += taskTime.hours;
 
             totalProject += taskTime.hours;
         }
-
-        const tbodyRows = [];
-
-        console.log(taskGroups);
-
-        // Take "tasks" instead of "taskGroups" due rows order by task creation
-
-        const getHideButton = (isHidden) => {
-            const style = isHidden ? visibleHiddenText.hidden : visibleHiddenText.visible;
-
-            const btn = wrapTag("button", style.txt, { class: style.elClass });
-
-            return btn;
-        };
 
         for (const task of tasksArray) {
             if (task.projectId !== this.projectId) continue;
@@ -78,7 +79,7 @@ class TaskStats {
             const taskTimeTotal = taskGroups[task.id] || { total: 0 };
             // if (!taskTimeTotal) continue;
 
-            const columnsValues = stagesArray.map((stage) => taskTimeTotal[stage.name] || 0);
+            const columnsValues = stagesArray.map((stage) => taskTimeTotal[stage.id] || 0);
             const data = [...columnsValues, taskTimeTotal.total].map((item) => wrapTag("td", item));
 
             data.unshift(wrapTag("td", "", {}, [wrapTag("input", "", { value: task.name, class: "task-name" })]));
@@ -88,6 +89,7 @@ class TaskStats {
         }
 
         const tbody = wrapTag("tbody", "", {}, tbodyRows);
+        this.dom.insertAdjacentHTML("beforeend", tbody);
 
         const totalH2 = q("#task-stats-total");
 
@@ -95,7 +97,6 @@ class TaskStats {
             totalH2.textContent = `Overall: ${total}h | Project total: ${totalProject}h`;
         }
 
-        this.dom.insertAdjacentHTML("beforeend", tbody);
         this.dom.querySelectorAll("input.task-name").forEach((input) => {
             input.onchange = (e) => {
                 const id = getParent(e.target, 2).dataset.id;

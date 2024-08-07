@@ -12,7 +12,7 @@
     <script src="/js/lib/moment.js"></script>
     <script src="/js/constants.js"></script>
     <script src="/js/helpers.js"></script>
-    <script src="/js/stage-tracker-by-task.js"></script>
+    <script src="/js/stage-tracker.js"></script>
     <script src="/js/stage-logging.js"></script>
     <script src="/js/stage-history.js"></script>
     <script src="/js/task-stats.js"></script>
@@ -110,6 +110,7 @@
                 <button class="search-next">Next</button>
 
                 <input type="week" name="week" id="search-week" required />
+                <button class="hide-upper-section">Hide</button>
             </div>
 
             <div id="upper-section">
@@ -117,9 +118,14 @@
                 <div id="stage-logging"></div>
             </div>
 
-            <div id="task-stats">
+            <div>
                 <h2 id="task-stats-total">Total</h2>
-                <table id="task-stats-table"></table>
+                <button class="hide-lower-section">Hide</button>
+                <div id="lower-section">
+                    <table id="task-stats-table"></table>
+                    <table id="stage-history"></table>
+
+                </div>
             </div>
         </section>
 

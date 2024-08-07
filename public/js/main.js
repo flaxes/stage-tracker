@@ -62,7 +62,7 @@ function activateCustomStageTimeForm() {
     const stageSelector = qStrict('[name="stage"]', dom, HTMLSelectElement);
 
     createRemoteSelector(taskSelector, "tasks", "id", "name");
-    createRemoteSelector(stageSelector, "stages", "name", "name");
+    createRemoteSelector(stageSelector, "stages", "id", "name");
 
     const quickMenuDom = qStrict("#quick-menu-button", document, HTMLButtonElement);
     quickMenuDom.onclick = () => {
@@ -83,7 +83,7 @@ function activateCustomStageTimeForm() {
             dateTs: Number((new Date(dateInput.value).getTime() / 1000).toFixed(0)),
             // task: taskSelectorValue.text,
             taskId: Number(taskSelectorValue.value),
-            stage: stageSelectorValue.value,
+            stageId: Number(stageSelector.value),
             hours: Number(hoursInput.value),
         };
 
@@ -106,6 +106,9 @@ function activateCustomStageTimeForm() {
 async function render() {
     const searchWeek = qStrict("#search-week", document, HTMLInputElement);
     const projectsBar = qStrict("#projects");
+    const upperSection = qStrict("#upper-section");
+    const lowerSection = qStrict("#lower-section");
+
     const currentWeek = SEARCH.get("week") || moment().format(WEEK_FORMAT);
 
     const projects = await requestCached("projects", "GET");
@@ -174,10 +177,15 @@ async function render() {
     const stageTracker = new StageTracker("#week-table", projectId);
     const stageLogging = new StageLogging("#stage-logging", projectId);
     const taskStats = new TaskStats("#task-stats-table", projectId);
+    const stageHistory = new StageHistory("#stage-history", projectId);
+
+    createElementHideButton(upperSection, "upper_section_hidden", qStrict(".hide-upper-section"));
+    createElementHideButton(lowerSection, "lower_section_hidden", qStrict(".hide-lower-section"));
 
     stageTracker.render(currentWeek);
     stageLogging.render();
     taskStats.render();
+    stageHistory.render();
 }
 
 render();

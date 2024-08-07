@@ -115,10 +115,16 @@ input[name="hours"] {
 #upper-section {
     display: flex;
     flex-direction: row;
-    width: 100%;;
+    width: 100%;
 
     /* overflow-y: auto;
     max-height: 50%; */
+}
+
+#lower-section {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
 }
 
 #task-stats-table {
@@ -183,14 +189,14 @@ input[name="hours"] {
     padding: 20px;
 
     overflow-y: scroll;
-    
+
     width: 500px;
     height: 90vh;
 
     text-align: start;
 }
 
-#stage-logging :first-child {
+#stage-logging .copy-button-container {
     width: 100%;
     margin-bottom: 10px;
     height: 20px;
@@ -234,6 +240,10 @@ input[name="hours"] {
     font-weight: 600;
 }
 
+#stage-logging .stage-week {
+    text-align: center;
+}
+
 .d-none {
     display: none !important;
 }
@@ -244,6 +254,10 @@ input[name="hours"] {
 
 .d-inline-block {
     display: inline-block;
+}
+
+.text-align-center {
+    text-align: center;
 }
 
 .w-100 {

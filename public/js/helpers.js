@@ -117,8 +117,9 @@ function wrapTag(tag, text, props, elements) {
  * @param {string} apiPath
  * @param {string} [valueKey]
  * @param {string} [nameKey]
+ * @param {(a: any, b: any) => number} [sorter]
  */
-function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name") {
+function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name", sorter) {
     dom.onfocus = async (e) => {
         const entities = await requestCached(apiPath, "GET");
         const lastSel = dom.options[dom.selectedIndex];
@@ -132,8 +133,13 @@ function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name") {
             dom.appendChild(lastSel);
         }
 
-        for (const id in entities) {
-            const entity = entities[id];
+        const arr = Object.values(entities);
+
+        if (sorter) {
+            arr.sort(sorter);
+        }
+
+        for (const entity of arr) {
             const name = entity[nameKey];
             const value = entity[valueKey];
 
@@ -287,4 +293,43 @@ function getParent(el, count) {
     return target;
 }
 
+/**
+ *
+ * @param {string | HTMLElement} el
+ * @param {string} storageKey
+ * @param {HTMLButtonElement} button
+ */
+function createElementHideButton(el, storageKey, button) {
+    if (typeof el === "string") {
+        el = qStrict(el);
+    }
+
+    if (localStorage.getItem(storageKey) === "1") {
+        el.classList.add("d-none");
+        button.textContent = "Show";
+    }
+
+    const fn = (_e) => {
+        const isHidden = el.classList.contains("d-none");
+
+        if (isHidden) {
+            el.classList.remove("d-none");
+            button.textContent = "Hide";
+        } else {
+            el.classList.add("d-none");
+            button.textContent = "Show";
+        }
+
+        localStorage.setItem(storageKey, isHidden ? "0" : "1");
+    };
+
+    button.onclick = fn;
+
+    return fn;
+}
+
 const getTimeFromDate = (date) => date.slice(11, 16);
+
+const sorters = {
+    alphabetAscByName: (a, b) => (a.name > b.name ? 1 : -1),
+};

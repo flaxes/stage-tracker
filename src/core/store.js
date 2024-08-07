@@ -14,6 +14,7 @@ class Store {
             : defaults || {
                   data: {},
                   lastIndex: 0,
+                  manifest: 0,
               };
     }
 
