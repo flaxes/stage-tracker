@@ -135,7 +135,7 @@ class StageTracker {
             wrapTag("button", "X", { class: "delete-button" }),
         ].join("");
 
-        const stageSelector = div.querySelector('[name="stage"]');
+        const stageSelector = div.querySelector('select[name="stage"]');
 
         if (row.stageId && stages) {
             const stage = stages[row.stageId];

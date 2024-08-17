@@ -66,6 +66,7 @@ select[name="task"] {
 
 select[name="stage"] {
     width: 68px;
+    height: 20px;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -75,7 +76,8 @@ select[name="stage"] {
 
 input[name="hours"] {
     width: 44px;
-    height: 11px;
+    height: 14px;
+    margin-top: 1px;
 }
 
 #projects {
@@ -190,9 +192,11 @@ input[name="hours"] {
     padding: 20px;
 
     width: 500px;
-    height: 90vh;
+    height: 800px;
 
     text-align: start;
+
+    overflow-y: auto;
 }
 
 #stage-logging .copy-button-container {

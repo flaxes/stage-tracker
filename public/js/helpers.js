@@ -120,7 +120,7 @@ function wrapTag(tag, text, props, elements) {
  * @param {(a: any, b: any) => number} [sorter]
  */
 function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name", sorter) {
-    dom.onfocus = async (e) => {
+    dom.onclick = async (e) => {
         const entities = await requestCached(apiPath, "GET");
         const lastSel = dom.options[dom.selectedIndex];
 
