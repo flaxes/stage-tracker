@@ -3,7 +3,7 @@ const path = require("path");
 const app = require("./core/server");
 const apiRouter = require("./router");
 const updater = require("./core/updater");
-const { port, updaterEnabled } = require("../config");
+const { port, updaterEnabled, browserEnv } = require("../config");
 const { isEnvTrue } = require("./core/helpers");
 
 const DEBUG = isEnvTrue("DEBUG");
@@ -36,6 +36,10 @@ async function main() {
     }
 
     const fullPublicPath = path.join(__dirname, publicPath);
+
+    const browserEnvJs = `const ENV = ${JSON.stringify(browserEnv)};`;
+    app.get("/js/config.js", (req, res) => res.type(".js").send(browserEnvJs));
+
     app.use(express.static(fullPublicPath));
 
     app.use("/api", apiRouter);

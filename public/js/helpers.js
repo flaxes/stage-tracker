@@ -1,5 +1,5 @@
 const BACKEND_PREFIX = "/api";
-const SEARCH = new URL(document.location).searchParams;
+const SEARCH = new URL(document.location.href).searchParams;
 const DATE_ISO_FORMAT = "yyyy-MM-DD";
 const TIME_FORMAT = "HH:mm";
 
@@ -19,7 +19,7 @@ async function request(path, method = "GET", data) {
     try {
         path = `${BACKEND_PREFIX}/${path}`;
 
-        /** @type {RequestInit} */
+        /** @type {RequestInit & Required<{ headers: HeadersInit }>} */
         const options = {
             method,
             headers: {},
@@ -174,14 +174,29 @@ function q(selector) {
  * @template {HTMLElement} T
  * @param {string} selector
  * @param {HTMLElement | Document | Element} [fromEl]
- * @param {new () => T} [type]
+ * @param {new (args: any) => T} [type]
  * @returns {T}
  */
-function qStrict(selector, fromEl = document, type = HTMLElement) {
+function qStrict(selector, fromEl = document, type) {
     const el = fromEl.querySelector(selector);
 
     if (!el) throw new Error(`${selector} not found`);
 
+    // @ts-ignore
+    return el;
+}
+
+/**
+ * @template {HTMLElement} T
+ * @param {string} selector
+ * @param {HTMLElement | Document | Element} [fromEl]
+ * @param {new (args: any) => T} [type]
+ * @returns {NodeListOf<T>}
+ */
+function qqStrict(selector, fromEl = document, type) {
+    const el = fromEl.querySelectorAll(selector);
+
+    // @ts-ignore
     return el;
 }
 
@@ -196,7 +211,7 @@ function qq(selector) {
 
 function checkObjectForEmpty(obj, isStrict) {
     for (const [key, value] of Object.entries(obj)) {
-        if (value === NaN || value === undefined) {
+        if (Number.isNaN(value) || value === undefined) {
             return key;
         }
 
@@ -236,7 +251,7 @@ function minutesToSummary(minutes) {
     return str;
 }
 
-function L(str, mode, modeCount) {
+/* function L(str, mode, modeCount) {
     str = str.trim();
     const words = str.split(" ");
 
@@ -259,7 +274,7 @@ function L(str, mode, modeCount) {
     });
 
     return str;
-}
+} */
 
 function refreshWithNewSearch(key, value) {
     if (!value) SEARCH.delete(key);

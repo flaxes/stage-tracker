@@ -8,7 +8,7 @@ class TaskStats {
         this.selector = selector;
 
         /** @type {HTMLTableElement} */
-        this.dom = q(selector);
+        this.dom = qStrict(selector);
 
         this.projectId = projectId;
     }
@@ -97,7 +97,7 @@ class TaskStats {
             totalH2.textContent = `Overall: ${total}h | Project total: ${totalProject}h`;
         }
 
-        this.dom.querySelectorAll("input.task-name").forEach((input) => {
+        qqStrict("input.task-name", this.dom, HTMLInputElement).forEach((input) => {
             input.onchange = (e) => {
                 const id = getParent(e.target, 2).dataset.id;
                 const task = tasks[id];
@@ -111,7 +111,8 @@ class TaskStats {
                 request("tasks/update", "POST", [task]);
             };
         });
-        this.dom.querySelectorAll(".hide-button button").forEach((button) => {
+
+        qqStrict(".hide-button button", this.dom).forEach((button) => {
             button.onclick = (e) => {
                 const id = getParent(e.target, 2).dataset.id;
 

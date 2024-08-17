@@ -1,5 +1,3 @@
-if (!moment) var moment = require("./lib/moment");
-
 class StageTracker {
     /**
      *
@@ -66,6 +64,10 @@ class StageTracker {
         for (const task of tasksArray) {
             if (task.projectId !== this.projectId) continue;
 
+            if (task.isHidden && !ENV.stageTracker.isStageDataAlwaysVisible) {
+                continue;
+            }
+
             const cells = [wrapTag("th", task.name, { class: "task-name" })];
 
             for (const date of columnDates) {
@@ -89,7 +91,9 @@ class StageTracker {
         this.dom.insertAdjacentHTML("beforeend", theadHtml);
         this.dom.insertAdjacentHTML("beforeend", wrapTag("tbody", "", {}, tbodyRows));
 
-        this.dom.querySelectorAll(".create-button").forEach((button) => {
+        qqStrict(".create-button", this.dom, HTMLButtonElement).forEach((button) => {
+            if (!button.parentElement) return;
+
             const { date, taskId } = button.parentElement.dataset;
             button.onclick = (_e) => {
                 // Don't provide stages, let them load dynamically
@@ -106,7 +110,7 @@ class StageTracker {
      *
      * @param {object} row
      * @param {Record<number, object>} [stages]
-     * @param {HTMLElement} [el]
+     * @param {Element | null} [el]
      * @returns
      */
     createCell(row, stages, el) {
@@ -119,8 +123,16 @@ class StageTracker {
         }
 
         const div = document.createElement("div");
-        el.append(div);
+
+        if (ENV.stageTracker.addNewOnTop) {
+            el.append(div);
+        } else {
+            el.insertBefore(div, qStrict(".create-button", el));
+        }
+
         div.className = "cell";
+
+        if (!el.parentElement) return;
 
         el.parentElement.classList.remove("d-none");
 
@@ -135,7 +147,7 @@ class StageTracker {
             wrapTag("button", "X", { class: "delete-button" }),
         ].join("");
 
-        const stageSelector = div.querySelector('select[name="stage"]');
+        const stageSelector = qStrict('select[name="stage"]', div, HTMLSelectElement);
 
         if (row.stageId && stages) {
             const stage = stages[row.stageId];
@@ -151,10 +163,10 @@ class StageTracker {
 
         createRemoteSelector(stageSelector, "stages", "id", "name");
 
-        const hoursInput = div.querySelector('[name="hours"]');
+        const hoursInput = qStrict('[name="hours"]', div, HTMLInputElement);
         if (row.hours) hoursInput.value = row.hours;
 
-        const deleteButton = div.querySelector("button");
+        const deleteButton = qStrict("button", div, HTMLButtonElement);
 
         const saveAction = () => {
             const stageSelectorValue = getSelectedOptionValue(stageSelector);

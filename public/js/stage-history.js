@@ -42,7 +42,6 @@ class StageHistory {
             );
         }
 
-        
         let tooltipMargin;
         const onMouseOver = (e) => {
             const text = e.currentTarget.children[0];
@@ -67,7 +66,7 @@ class StageHistory {
                 wrapTag("td", "", {}, [wrapTag("div", "", { class: "times" }, stageTimes)]),
             ]);
 
-            stageDom.querySelectorAll(".tooltip").forEach((item) => {
+            qqStrict(".tooltip", stageDom, HTMLElement).forEach((item) => {
                 item.onmouseover = onMouseOver;
             });
         }

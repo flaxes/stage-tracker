@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "ES2022",
+        "moduleResolution": "Bundler",
+        "target": "ES2022",
+        "lib": ["es2022", "DOM"],
+        "checkJs": true,
+        "strictNullChecks": true
+    },
+    "include": ["./**/*.js", "../types/**/*.ts"],
+    "exclude": ["node_modules", "build"]
+}
