@@ -177,6 +177,7 @@ input[name="hours"] {
 
     width: 200px;
     font-size: small;
+    text-align: start;
 }
 
 #week-table .delete-button {
