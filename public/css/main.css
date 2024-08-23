@@ -141,7 +141,17 @@ input[name="hours"] {
     position: relative;
 }
 
+#task-stats-table input {
+    border-radius: 6px;
+    /* border: 1px solid black; */
+    border: unset;
+}
+
 #task-stats-table tr:nth-child(odd) {
+    background-color: var(--even-background);
+}
+
+#task-stats-table tr:nth-child(odd) input {
     background-color: var(--even-background);
 }
 
