@@ -1,6 +1,6 @@
 # Stage Tracker
 
-_[Читати українською](README_uk.md) | [Читать на русском](README_ru.md) | [Read in English](README.md)_
+_[Читати українською](/docs/uk.md) | [Читать на русском](/docs/ru.md) | [Read in english](/README.md)_
 
 Stage Tracker is a task management tool that helps you track progress through different stages. It operates using local storage, allowing you to work offline. You can use it in a web browser or as a standalone Electron application.
 
@@ -31,6 +31,10 @@ To install and run Stage Tracker, follow these steps:
 ## Resetting Data
 
 To erase all stored data and start fresh, simply delete the `storage` folder from the project directory.
+
+## Donations
+
+- Monobank UAH: [Link](https://send.monobank.ua/jar/56BTVcCyAt)
 
 ## Contribute
 
