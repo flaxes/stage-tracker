@@ -1,7 +1,9 @@
 // @ts-check
 if (!moment) var moment = require("./lib/moment");
 
-function activateCreateStageForm() {
+const DEFAULT_PROJECT_COLOR = "#3c4daf";
+
+function activateCreateStageQuickmenu() {
     const dom = qStrict("#create-stage-section");
 
     const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
@@ -16,21 +18,78 @@ function activateCreateStageForm() {
     };
 }
 
-function activateCreateProjectForm() {
-    const dom = qStrict("#create-project-section");
+function activateProjectQuickmenu() {
+    const createProjectSection = qStrict("#create-project-section");
 
-    const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
+    const newProjectInput = qStrict('[name="name"]', createProjectSection, HTMLInputElement);
 
-    qStrict("button", dom, HTMLButtonElement).onclick = (e) => {
+    qStrict("button", createProjectSection, HTMLButtonElement).onclick = (e) => {
         e.preventDefault();
 
-        request("/projects/create", "POST", [{ name: nameInput.value }]).then(() => {
-            nameInput.value = "";
+        request("/projects/create", "POST", [{ name: newProjectInput.value }]).then(() => {
+            newProjectInput.value = "";
+        });
+    };
+
+    const editProjectSection = qStrict("#edit-project-section");
+    const editProjectSelect = qStrict('[name="project"]', editProjectSection, HTMLSelectElement);
+    const editProjectName = qStrict('[name="name"]', editProjectSection, HTMLInputElement);
+    const editProjectColor = qStrict('[name="color"]', editProjectSection, HTMLInputElement);
+
+    const projectsPromise = createRemoteSelector(editProjectSelect, "projects", "id", "name");
+
+    editProjectSelect.addEventListener("change", async (e) => {
+        const selectedProject = getSelectedOptionValue(editProjectSelect);
+        if (!selectedProject) return;
+
+        const projectId = Number(selectedProject.value);
+        if (!projectId) return;
+
+        const project = (await projectsPromise)[projectId];
+
+        editProjectName.value = project.name;
+        editProjectColor.value = project.color || DEFAULT_PROJECT_COLOR;
+    });
+
+    qStrict("button", editProjectSection, HTMLButtonElement).onclick = (e) => {
+        e.preventDefault();
+
+        const selectedProject = getSelectedOptionValue(editProjectSelect);
+        if (!selectedProject) return;
+
+        const projectId = Number(selectedProject.value);
+        if (!projectId) return;
+
+        const update = {
+            id: projectId,
+            name: editProjectName.value,
+            color: editProjectColor.value,
+        };
+
+        request("/projects/update", "POST", update);
+    };
+
+    const deleteProjectSection = qStrict("#delete-project-section");
+    const deleteProjectSelect = qStrict('[name="project"]', deleteProjectSection, HTMLSelectElement);
+
+    createRemoteSelector(deleteProjectSelect, "projects", "id", "name");
+
+    qStrict("button", deleteProjectSection, HTMLButtonElement).onclick = (e) => {
+        e.preventDefault();
+
+        const selectedProject = getSelectedOptionValue(deleteProjectSelect);
+        if (!selectedProject) return;
+        const txt = `You want to delete "${selectedProject.text}" project. Are you sure?`;
+        const isConfirmed = confirm(txt);
+        if (!isConfirmed) return;
+
+        request("/projects/delete", "POST", [Number(selectedProject.value)]).then(() => {
+            window.location.reload();
         });
     };
 }
 
-function activateCreateTaskForm() {
+function activateCreateTaskQuickmenu() {
     const dom = qStrict("#create-task-section");
 
     const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
@@ -53,7 +112,7 @@ function activateCreateTaskForm() {
     };
 }
 
-function activateCustomStageTimeForm() {
+function activateCustomStageTimeQuickmenu() {
     const dom = qStrict("#create-custom-stage-time");
 
     const dateInput = qStrict('[name="date"]', dom, HTMLInputElement);
@@ -145,7 +204,14 @@ async function render() {
     const html = Object.values(projects)
         .sort((a, b) => a.createdAt - b.createdAt)
         .map((item) => {
-            return wrapTag("a", item.name, { "data-id": item.id, class: "project-select", href: "#" });
+            const { backgroundColor, color } = getButtonStyleColors(item.color || DEFAULT_PROJECT_COLOR);
+
+            return wrapTag("a", item.name, {
+                "data-id": item.id,
+                class: "project-select",
+                href: "#",
+                style: `background-color: ${backgroundColor}; color:${color}`,
+            });
         })
         .join("");
 
@@ -175,10 +241,10 @@ async function render() {
     qStrict(".search-prev").onclick = changeWeek(-1);
     qStrict(".search-next").onclick = changeWeek(1);
 
-    activateCreateStageForm();
-    activateCreateProjectForm();
-    activateCreateTaskForm();
-    activateCustomStageTimeForm();
+    activateCreateStageQuickmenu();
+    activateProjectQuickmenu();
+    activateCreateTaskQuickmenu();
+    activateCustomStageTimeQuickmenu();
 
     if (!projectId) return;
     const stageTracker = new StageTracker("#week-table", projectId);

@@ -65,14 +65,37 @@
 
                 </div>
 
-                <div id="create-project-section">
-                    <div>Create project</div>
-
-                    <div>
-                        <div>Project name</div>
+                <div>
+                    <div id="create-project-section">
+                        <h3>New project</h3>
+                        <label>Name</label>
                         <input type="text" name="name" autocomplete="off">
 
                         <button>Create</button>
+                    </div>
+
+                    <div id="edit-project-section">
+                        <h3>Edit project</h3>
+
+                        <div>
+                            <label>Selected Project</label>
+                            <select name="project"></select>
+                        </div>
+
+                        <label>Name</label>
+                        <input type="text" name="name" autocomplete="off">
+
+                        <label>Color</label>
+                        <input type="color" name="color" autocomplete="off">
+
+                        <button>Save</button>
+                    </div>
+
+                    <div id="delete-project-section">
+                        <h3>Delete project</h3>
+                        <label>Selected Project</label>
+                        <select name="project"></select>
+                        <button>Delete</button>
                     </div>
                 </div>
 
@@ -105,20 +128,28 @@
                 </div>
             </div>
 
-            <div id="pagination">
-                <h2>Stage tracker</h2>
-
-                <button class="search-prev">Prev</button>
-
-                <input type="week" name="week" id="search-week" required />
-
-                <button class="search-next">Next</button>
-                <button class="hide-upper-section">Hide</button>
-            </div>
+            <button class="hide-upper-section">Hide</button>
 
             <div id="upper-section">
-                <table id="week-table" class="table-border"></table>
-                <div id="stage-logging" class="table-border"></div>
+                <div class="left-section">
+                    <h2>Week table</h2>
+
+                    <div id="pagination">
+
+                        <button class="search-prev">Prev</button>
+
+                        <input type="week" name="week" id="search-week" required />
+
+                        <button class="search-next">Next</button>
+                    </div>
+
+                    <table id="week-table" class="table-border"></table>
+                </div>
+
+                <div class="right-section">
+                    <h2>Logging</h2>
+                    <div id="stage-logging" class="table-border"></div>
+                </div>
             </div>
 
             <div>

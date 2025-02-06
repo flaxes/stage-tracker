@@ -120,37 +120,50 @@ function wrapTag(tag, text, props, elements) {
  * @param {(a: any, b: any) => number} [sorter]
  */
 function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name", sorter) {
-    dom.onclick = async (e) => {
-        const entities = await requestCached(apiPath, "GET");
-        const lastSel = dom.options[dom.selectedIndex];
+    return new Promise((resolve, reject) => {
+        dom.onclick = async (e) => {
+            const entities = await requestCached(apiPath, "GET").catch((err) => reject(err));
+            if (!entities) return;
 
-        while (dom.options.length) {
-            dom.options.remove(0);
-        }
+            resolve(entities);
 
-        if (lastSel) {
-            lastSel.hidden = true;
-            dom.appendChild(lastSel);
-        }
+            const lastSel = dom.options[dom.selectedIndex];
 
-        const arr = Object.values(entities);
+            while (dom.options.length) {
+                dom.options.remove(0);
+            }
 
-        if (sorter) {
-            arr.sort(sorter);
-        }
+            if (lastSel) {
+                lastSel.hidden = true;
+                dom.appendChild(lastSel);
+            }
 
-        for (const entity of arr) {
-            const name = entity[nameKey];
-            const value = entity[valueKey];
+            const arr = Object.values(entities);
 
-            const el = document.createElement("option");
+            if (!arr.length) return;
 
-            el.innerText = name;
-            el.value = value;
+            if (sorter) {
+                arr.sort(sorter);
+            }
 
-            dom.appendChild(el);
-        }
-    };
+            for (const entity of arr) {
+                const name = entity[nameKey];
+                const value = entity[valueKey];
+
+                const el = document.createElement("option");
+
+                el.innerText = name;
+                el.value = value;
+
+                dom.appendChild(el);
+            }
+
+            if (!lastSel) {
+                // Fix for auto-select
+                dom.dispatchEvent(new Event("change"));
+            }
+        };
+    });
 }
 
 function getSelectedOptionValue(dom) {
@@ -341,6 +354,43 @@ function createElementHideButton(el, storageKey, button) {
     button.onclick = fn;
 
     return fn;
+}
+
+function getLuminance(hex) {
+    hex = hex.replace(/^#/, "");
+    if (hex.length === 3) {
+        hex = hex
+            .split("")
+            .map((x) => x + x)
+            .join("");
+    }
+    const r = parseInt(hex.substr(0, 2), 16) / 255;
+    const g = parseInt(hex.substr(2, 2), 16) / 255;
+    const b = parseInt(hex.substr(4, 2), 16) / 255;
+
+    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+    return luminance;
+}
+
+function getButtonStyleColors(hex) {
+    const isWhite = getLuminance(hex) < 0.5;
+
+    const textColor = isWhite ? "#e0e0e0" : "#1e1e1e";
+
+    return { backgroundColor: hex, color: textColor };
+}
+
+/**
+ *
+ * @param {HTMLButtonElement} button
+ * @param {string} hex
+ */
+function setButtonColor(button, hex) {
+    for (const [key, value] of Object.entries(getButtonStyleColors(hex))) {
+        button.style[key] = value;
+    }
+
+    return button;
 }
 
 const getTimeFromDate = (date) => date.slice(11, 16);
