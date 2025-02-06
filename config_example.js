@@ -10,5 +10,6 @@ module.exports = {
             // Moves "+" button on top of cell
             addNewOnTop: false,
         },
+        theme: "default",
     },
 };

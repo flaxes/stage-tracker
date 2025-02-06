@@ -1,0 +1,114 @@
+:root {
+    --background-color: #1e1e1e;
+    --foreground-color: #2c2c2c;
+    --text-color: #e0e0e0;
+    --even-background: #585858;
+    --odd-background: #333333;
+    --primary-color: #bb86fc;
+    --primary-hover: #9a67ea;
+    --secondary-color: #3c4daf;
+    --secondary-hover: #460088;
+    --button-visible: #03dac5;
+    --button-hidden: #bb86fc;
+    --border-color: #444;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+div {
+    background-color: var(--foreground-color);
+}
+
+menu a {
+    background-color: var(--primary-color);
+    color: #000;
+}
+
+menu a:hover {
+    background-color: var(--primary-hover);
+}
+
+thead,
+th {
+    background-color: var(--foreground-color);
+}
+
+#projects a {
+    background-color: var(--secondary-color);
+}
+
+#projects a:hover {
+    background-color: var(--secondary-hover);
+}
+
+#quick-menu > div {
+    border: 1px solid var(--border-color);
+}
+
+#task-stats-table td {
+    border: var(--border-color) 1px solid;
+}
+
+#task-stats-table tr {
+    background-color: var(--even-background);
+}
+
+#task-stats-table tr input {
+    background-color: var(--even-background);
+    color: var(--text-color);
+}
+
+#task-stats-table tr:nth-child(odd) {
+    background-color: var(--odd-background);
+}
+
+#task-stats-table tr:nth-child(odd) input {
+    background-color: var(--odd-background);
+    color: var(--text-color);
+}
+
+#week-table .delete-button {
+    border: 1px solid var(--border-color);
+    border-radius: 8cm;
+}
+
+#stage-logging .stage-date {
+    border-top: 1px dotted var(--border-color);
+}
+
+#stage-history tbody tr td {
+    border-top: 1px solid var(--border-color);
+}
+
+.button-visible-toggle {
+    background-color: var(--button-visible);
+}
+
+.button-visible-toggle.hidden-state {
+    background-color: var(--button-hidden);
+}
+
+/** Tooltip */
+.tooltip {
+    max-height: 40px;
+    cursor: default;
+}
+
+.tooltip div {
+    background-color: unset;
+}
+
+/* Tooltip text */
+.tooltip .tooltip-text {
+    background-color: var(--foreground-color);
+    color: var(--text-color);
+    border-radius: 6px;
+}
+
+.table-border {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+}

@@ -13,7 +13,7 @@ Stage Tracker is a task management tool that helps you track progress through di
 
 ## Customization
 
-Stage Tracker supports full customization via CSS. Modify the default styling or create your own theme using the [`main.css`](public/css/main.css) file.
+Stage Tracker supports full customization via CSS. Modify the default styling or create your own theme using the [`theme-default.css`](/public/css/theme-default.css) file.
 
 ## Installation
 

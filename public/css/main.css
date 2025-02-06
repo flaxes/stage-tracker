@@ -1,14 +1,5 @@
 :root {
     --menu-width: 200px;
-    --even-background: #d7d7d7;
-}
-
-body {
-    background-color: grey;
-}
-
-div {
-    background-color: #fff;
 }
 
 menu {
@@ -20,17 +11,11 @@ menu {
 
 menu a {
     text-decoration: none;
-    background-color: #8200fc;
     border-radius: 10px;
     margin-right: 10px;
     padding: 8px;
-    color: #fff;
 
     display: inline-block;
-}
-
-menu a:hover {
-    background-color: #8200aa;
 }
 
 main {
@@ -46,14 +31,8 @@ section {
     padding: 6px;
 }
 
-thead {
-    background-color: lightgray;
-}
-
 th {
     padding: 12px;
-
-    background-color: lightgray;
 }
 
 td {
@@ -94,21 +73,9 @@ input[name="hours"] {
     overflow-x: auto;
 }
 
-#projects a {
-    background-color: #3c4daf;
-}
-
-#projects a:hover {
-    background-color: #460088;
-}
-
 #quick-menu {
     display: flex;
     justify-content: center;
-}
-
-#quick-menu > div {
-    border: 1px solid #000000;
 }
 
 #quick-menu div div {
@@ -147,17 +114,7 @@ input[name="hours"] {
     border: unset;
 }
 
-#task-stats-table tr:nth-child(odd) {
-    background-color: var(--even-background);
-}
-
-#task-stats-table tr:nth-child(odd) input {
-    background-color: var(--even-background);
-}
-
 #task-stats-table td {
-    border: #000 1px solid;
-
     text-align: center;
     position: relative;
 }
@@ -191,8 +148,6 @@ input[name="hours"] {
 }
 
 #week-table .delete-button {
-    border: 1px solid #000;
-    border-radius: 8cm;
     text-align: center;
     font-size: x-small;
     font-weight: 600;
@@ -250,7 +205,6 @@ input[name="hours"] {
 
 #stage-logging .stage-date {
     margin-bottom: 8px;
-    border-top: 1px dotted #000;
     font-weight: 600;
 }
 
@@ -274,14 +228,6 @@ input[name="hours"] {
 #stage-history .stage-column {
     width: 56px;
 }
-
-#stage-history tbody tr td {
-    border-top: 1px solid #000;
-}
-
-/* #stage-history tr:nth-child(odd) {
-    background-color: var(--even-background);
-} */
 
 #stage-history .times {
     display: flex;
@@ -317,23 +263,9 @@ input[name="hours"] {
     width: 100%;
 }
 
-.table-border {
-    border: 2px solid #000;
-    border-radius: 12px;
-}
-
 .create-button {
     left: 40%;
     position: relative;
-}
-
-.button-visible-toggle {
-    background-color: #98eb7f;
-}
-
-.button-visible-toggle.hidden-state {
-    background-color: #8082f8;
-    /* color: #ffffff; */
 }
 
 /** Tooltip */
@@ -342,19 +274,12 @@ input[name="hours"] {
     cursor: default;
 }
 
-.tooltip div {
-    background-color: unset;
-}
-
 /* Tooltip text */
 .tooltip .tooltip-text {
     visibility: hidden;
     width: 120px;
-    background-color: black;
-    color: #fff;
     text-align: center;
     padding: 5px 0;
-    border-radius: 6px;
 
     /* Position the tooltip text - see examples below! */
     position: absolute;

@@ -1,0 +1,105 @@
+:root {
+    --even-background: #d7d7d7;
+    --primary-color: #8200fc;
+    --primary-hover: #8200aa;
+    --secondary-color: #3c4daf;
+    --secondary-hover: #460088;
+    --button-visible: #98eb7f;
+    --button-hidden: #8082f8;
+}
+
+body {
+    background-color: grey;
+}
+
+div {
+    background-color: #fff;
+}
+
+menu a {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+menu a:hover {
+    background-color: var(--primary-hover);
+}
+
+thead {
+    background-color: lightgray;
+}
+
+th {
+    background-color: lightgray;
+}
+
+#projects a {
+    background-color: var(--secondary-color);
+}
+
+#projects a:hover {
+    background-color: var(--secondary-hover);
+}
+
+#quick-menu > div {
+    border: 1px solid #000000;
+}
+
+#task-stats-table td {
+    border: #000 1px solid;
+}
+
+#task-stats-table tr:nth-child(odd) {
+    background-color: var(--even-background);
+}
+
+#task-stats-table tr:nth-child(odd) input {
+    background-color: var(--even-background);
+}
+
+#week-table .delete-button {
+    border: 1px solid #000;
+    border-radius: 8cm;
+}
+
+#stage-logging .stage-date {
+    border-top: 1px dotted #000;
+}
+
+#stage-history tbody tr td {
+    border-top: 1px solid #000;
+}
+
+/* #stage-history tr:nth-child(odd) {
+    background-color: var(--even-background);
+} */
+
+.button-visible-toggle {
+    background-color: var(--button-visible);
+}
+
+.button-visible-toggle.hidden-state {
+    background-color: var(--button-hidden);
+}
+
+/** Tooltip */
+.tooltip {
+    max-height: 40px;
+    cursor: default;
+}
+
+.tooltip div {
+    background-color: unset;
+}
+
+/* Tooltip text */
+.tooltip .tooltip-text {
+    background-color: black;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.table-border {
+    border: 2px solid #000;
+    border-radius: 12px;
+}

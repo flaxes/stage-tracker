@@ -103,7 +103,14 @@ function activateCustomStageTimeForm() {
     };
 }
 
+function setTheme(theme) {
+    // @ts-ignore
+    document.getElementById("theme-style").href = `/css/theme-${theme}.css`;
+}
+
 async function render() {
+    setTheme(ENV.theme);
+
     const searchWeek = qStrict("#search-week", document, HTMLInputElement);
     const projectsBar = qStrict("#projects");
     const upperSection = qStrict("#upper-section");

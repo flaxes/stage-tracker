@@ -38,9 +38,22 @@ async function main() {
     const fullPublicPath = path.join(__dirname, publicPath);
 
     const browserEnvJs = `const ENV = ${JSON.stringify(browserEnv)};`;
-    app.get("/js/config.js", (req, res) => res.type(".js").send(browserEnvJs));
 
-    app.use(express.static(fullPublicPath));
+    app.use(
+        express.static(fullPublicPath, {
+            etag: false,
+            lastModified: false,
+            setHeaders(res) {
+                res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+                res.setHeader("Pragma", "no-cache");
+                res.setHeader("Expires", "0");
+            },
+        })
+    );
+
+    app.get("/js/config.js", (_req, res) => {
+        res.type(".js").send(browserEnvJs);
+    });
 
     app.use("/api", apiRouter);
 
