@@ -28,6 +28,47 @@ class StageLogging {
             ])
         );
 
+        const projectValues = Object.values(projects);
+        const projectCheckboxes = wrapTag(
+            "div",
+            "",
+            { class: "project-checkboxes" },
+            projectValues.map((item) => {
+                const style = getButtonStyleColorsText(item.color || DEFAULT_PROJECT_COLOR);
+                const checkbox = wrapTag("input", "", {
+                    class: "project-checkbox-input",
+                    type: "checkbox",
+                });
+
+                const projectName = wrapTag("span", item.name, { class: "project-checkbox-name" });
+
+                const html = wrapTag(
+                    "span",
+                    "",
+                    { class: "project-checkbox-container unselectable", style, "data-project-id": item.id },
+                    [checkbox, projectName]
+                );
+
+                return html;
+            })
+        );
+
+        this.dom.insertAdjacentHTML("beforeend", projectCheckboxes);
+        qqStrict(".project-checkbox-container", this.dom, HTMLSpanElement).forEach((container) => {
+            const checkbox = qStrict("input", container, HTMLInputElement);
+            checkbox.checked = true;
+
+            container.onclick = (e) => {
+                if (e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+
+                qqStrict(`.row[data-project-id="${container.dataset.projectId}"`).forEach((item) => {
+                    item.toggleAttribute("hidden");
+                });
+            };
+        });
+
         const elements = [];
 
         let lastWeek;
@@ -67,15 +108,13 @@ class StageLogging {
                 this.txt += `${localDate}\n`;
             }
 
-            this.txt += `${task.name} ${stage.name} ${row.hours}h\n`;
-            console.log(elements);
+            this.txt += `${project.name} ${task.name} ${stage.name} ${row.hours}h\n`;
 
-            const { backgroundColor, color } = getButtonStyleColors(project.color || DEFAULT_PROJECT_COLOR);
-            const projectStyles = `background-color: ${backgroundColor}; color: ${color}`;
+            const projectStyles = getButtonStyleColorsText(project.color || DEFAULT_PROJECT_COLOR);
             const projectCapsule = wrapTag("span", project.name, { class: "project-name", style: projectStyles });
 
             elements.push(
-                wrapTag("div", "", { class: "row" }, [
+                wrapTag("div", "", { class: "row", "data-project-id": project.id }, [
                     // wrapTag("div", row.date, { class: "stage-date" }),
                     projectCapsule,
                     wrapTag("span", task.name, { class: "task-name" }),
@@ -89,6 +128,7 @@ class StageLogging {
             copyToClipboard(this.txt);
         };
 
-        this.dom.insertAdjacentHTML("beforeend", elements.join(""));
+        const dataHtml = wrapTag("div", "", { class: "stage-logging-data" }, elements);
+        this.dom.insertAdjacentHTML("beforeend", dataHtml);
     }
 }

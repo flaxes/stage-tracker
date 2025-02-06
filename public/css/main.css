@@ -160,12 +160,21 @@ input[name="hours"] {
     text-align: center;
 }
 
+#stage-logging .project-checkbox-container {
+    margin-left: 2px;
+    border-radius: 6px;
+    padding: 0;
+    padding-left: 1px;
+    padding-right: 1px;
+    margin-bottom: 2px;
+}
+
 #stage-logging :first-child button {
     width: 60px;
 }
 
 #stage-logging .row {
-    padding-bottom: 12px;
+    padding-bottom: 8px;
 }
 
 #stage-logging button {
@@ -178,7 +187,7 @@ input[name="hours"] {
     display: inline-block;
 }
 
-#stage-logging span:last-child {
+#stage-logging .stage-logging-data span:last-child {
     padding-right: unset;
     text-align: end;
 }
@@ -280,6 +289,15 @@ input[name="hours"] {
 
 .tooltip:hover .tooltip-text {
     visibility: visible;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 @media screen and (max-width: 1000px) {

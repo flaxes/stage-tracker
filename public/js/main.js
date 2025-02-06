@@ -202,13 +202,13 @@ async function render() {
     const html = Object.values(projects)
         .sort((a, b) => a.createdAt - b.createdAt)
         .map((item) => {
-            const { backgroundColor, color } = getButtonStyleColors(item.color || DEFAULT_PROJECT_COLOR);
+            const style = getButtonStyleColorsText(item.color || DEFAULT_PROJECT_COLOR);
 
             return wrapTag("a", item.name, {
                 "data-id": item.id,
                 class: "project-select",
                 href: "#",
-                style: `background-color: ${backgroundColor}; color:${color}`,
+                style,
             });
         })
         .join("");

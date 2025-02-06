@@ -381,6 +381,12 @@ function getButtonStyleColors(hex) {
     return { backgroundColor: hex, color: textColor };
 }
 
+function getButtonStyleColorsText(hex) {
+    const { backgroundColor, color } = getButtonStyleColors(hex);
+
+    return `background-color: ${backgroundColor}; color: ${color}`;
+}
+
 /**
  *
  * @param {HTMLButtonElement} button
