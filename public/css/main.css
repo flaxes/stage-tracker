@@ -2,6 +2,12 @@
     --menu-width: 200px;
 }
 
+body,
+div {
+    margin: 0;
+    padding: 0;
+}
+
 menu {
     width: var(--menu-width);
     height: 10%;
@@ -14,7 +20,6 @@ menu a {
     border-radius: 10px;
     margin-right: 10px;
     padding: 8px;
-
     display: inline-block;
 }
 
@@ -31,12 +36,13 @@ section {
     padding: 6px;
 }
 
-th {
-    padding: 12px;
-}
-
+th,
 td {
     padding: 6px;
+}
+
+th {
+    padding: 12px;
 }
 
 select[name="task"] {
@@ -46,8 +52,6 @@ select[name="task"] {
 select[name="stage"] {
     width: 68px;
     height: 20px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     text-indent: 1px;
     text-overflow: "";
@@ -61,15 +65,11 @@ input[name="hours"] {
 
 #projects {
     max-width: 60vw;
-    /* max-width: 12vw; */
     display: flex;
     flex-direction: row;
-
     margin-bottom: 12px;
-
     position: absolute;
     left: calc(var(--menu-width) + 20px);
-
     overflow-x: auto;
 }
 
@@ -82,20 +82,15 @@ input[name="hours"] {
     padding: 2px;
 }
 
-#upper-section {
+#upper-section,
+#lower-section {
     display: flex;
     flex-direction: row;
     width: 100%;
-
-    /* overflow-y: auto;
-    max-height: 50%; */
 }
 
 #lower-section {
-    display: flex;
     justify-content: space-around;
-    flex-direction: row;
-    width: 100%;
 }
 
 #task-stats-table {
@@ -108,15 +103,14 @@ input[name="hours"] {
     position: relative;
 }
 
-#task-stats-table input {
-    border-radius: 6px;
-    /* border: 1px solid black; */
-    border: unset;
-}
-
 #task-stats-table td {
     text-align: center;
     position: relative;
+}
+
+#task-stats-table input {
+    border-radius: 6px;
+    border: unset;
 }
 
 #task-stats-table .task-name {
@@ -139,9 +133,6 @@ input[name="hours"] {
 }
 
 #week-table .task-name {
-    text-wrap: pretty;
-    text-wrap-mode: wrap;
-
     width: 200px;
     font-size: small;
     text-align: start;
@@ -156,12 +147,9 @@ input[name="hours"] {
 
 #stage-logging {
     padding: 20px;
-
     width: 500px;
     height: 800px;
-
     text-align: start;
-
     overflow-y: auto;
 }
 
@@ -197,10 +185,7 @@ input[name="hours"] {
 
 #stage-logging .task-name {
     width: 300px;
-
     font-size: smaller;
-
-    text-wrap: pretty;
 }
 
 #stage-logging .stage-date {
@@ -215,15 +200,10 @@ input[name="hours"] {
 #stage-history {
     table-layout: fixed;
     width: 40%;
-
     font-size: larger;
     height: min-content;
     padding: 2px;
 }
-
-/* #stage-history .hours-column {
-    max-width: 90%;
-} */
 
 #stage-history .stage-column {
     width: 56px;
@@ -243,6 +223,7 @@ input[name="hours"] {
     width: 100%;
 }
 
+/* Utility Classes */
 .d-none {
     display: none !important;
 }
@@ -268,20 +249,17 @@ input[name="hours"] {
     position: relative;
 }
 
-/** Tooltip */
+/* Tooltip */
 .tooltip {
     max-height: 40px;
     cursor: default;
 }
 
-/* Tooltip text */
 .tooltip .tooltip-text {
     visibility: hidden;
     width: 120px;
     text-align: center;
     padding: 5px 0;
-
-    /* Position the tooltip text - see examples below! */
     position: absolute;
     z-index: 999;
 }
@@ -291,10 +269,10 @@ input[name="hours"] {
     margin-top: -28px;
 }
 
-/* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltip-text {
     visibility: visible;
 }
 
 @media screen and (max-width: 1000px) {
+    /* Add responsive styles here if needed */
 }
