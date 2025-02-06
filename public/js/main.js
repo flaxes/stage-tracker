@@ -1,8 +1,6 @@
 // @ts-check
 if (!moment) var moment = require("./lib/moment");
 
-const DEFAULT_PROJECT_COLOR = "#3c4daf";
-
 function activateCreateStageQuickmenu() {
     const dom = qStrict("#create-stage-section");
 

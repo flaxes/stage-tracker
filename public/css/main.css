@@ -183,6 +183,15 @@ input[name="hours"] {
     text-align: end;
 }
 
+#stage-logging .project-name {
+    text-align: center;
+    padding-right: 0;
+    padding: 2px;
+    border-radius: 6px;
+
+    margin-right: 6px;
+}
+
 #stage-logging .task-name {
     width: 300px;
     font-size: smaller;

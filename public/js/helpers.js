@@ -2,6 +2,7 @@ const BACKEND_PREFIX = "/api";
 const SEARCH = new URL(document.location.href).searchParams;
 const DATE_ISO_FORMAT = "yyyy-MM-DD";
 const TIME_FORMAT = "HH:mm";
+const DEFAULT_PROJECT_COLOR = "#3c4daf";
 
 const WEEKDAY = {
     1: "monday",
