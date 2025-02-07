@@ -1,3 +1,35 @@
+/**
+ *
+ * @param {Record<number, object>} projects
+ */
+function activateProjectSelectionQuickMenu(projects) {
+    const onProjectClick = (e) => {
+        const id = e.target.dataset.id;
+        if (!id) return;
+
+        refreshWithNewSearch("project", id);
+    };
+
+    const projectsBar = qStrict("#projects");
+    const html = Object.values(projects)
+        .sort((a, b) => a.createdAt - b.createdAt)
+        .map((item) => {
+            const style = getButtonStyleColorsText(item.color || DEFAULT_PROJECT_COLOR);
+
+            return wrapTag("a", item.name, {
+                "data-id": item.id,
+                class: "project-select",
+                href: "#",
+                style,
+            });
+        })
+        .join("");
+
+    projectsBar.insertAdjacentHTML("beforeend", html);
+    projectsBar.querySelectorAll("a").forEach((item) => (item.onclick = onProjectClick));
+
+}
+
 function activateCustomStageTimeQuickmenu() {
     const dom = qStrict("#create-custom-stage-time");
 
@@ -59,7 +91,11 @@ function activateCustomStageTimeQuickmenu() {
     };
 }
 
-function activateProjectQuickmenu() {
+/**
+ *
+ * @param {HTMLElement[]} [domsForColoring]
+ */
+function activateProjectQuickmenu(domsForColoring = []) {
     const createProjectSection = qStrict("#create-project-section");
 
     const newProjectInput = qStrict('[name="name"]', createProjectSection, HTMLInputElement);
@@ -112,12 +148,55 @@ function activateProjectQuickmenu() {
             color: editProjectColor.value,
         };
 
-        request("/projects/update", "POST", update);
-    };
+        request("/projects/update", "POST", update).then(() => {
+            const projectButton = qStrict(`#projects [data-id="${projectId}"]`);
+            projectButton.textContent = update.name;
 
-    const deleteProjectSection = qStrict("#delete-project-section");
+            for (const dom of domsForColoring) {
+                dom.style.borderColor = update.color;
+            }
+
+            projectButton.setAttribute("style", getButtonStyleColorsText(update.color));
+        });
+    };
+}
+
+function activateTaskQuickmenu() {
+    const dom = qStrict("#tasks-section");
+
+    const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
+    const projectSelector = qStrict('[name="project"]', dom, HTMLSelectElement);
+
+    nameInput.disabled = true;
+
+    createRemoteSelector({
+        apiPath: "projects",
+        valueKey: "id",
+        nameKey: "name",
+        dom: projectSelector,
+    });
+
+    qStrict("button.create", dom, HTMLButtonElement).onclick = (e) => {
+        e.preventDefault();
+
+        const project = getSelectedOptionValue(projectSelector);
+        if (!project || !nameInput.value) return;
+
+        request("/tasks/create", "POST", [{ name: nameInput.value, projectId: Number(project.value) }]).then(() => {
+            nameInput.value = "";
+            projectSelector.value = "";
+
+            // window.location.reload();
+        });
+    };
+}
+
+function activeDeleteSection() {
+    const deleteSection = qStrict("#delete-section");
+    const deleteProjectSection = qStrict("#delete-project-section", deleteSection, HTMLDivElement);
     const deleteProjectSelect = qStrict('[name="project"]', deleteProjectSection, HTMLSelectElement);
 
+    // Project delete
     createRemoteSelector({
         apiPath: "projects",
         valueKey: "id",
@@ -125,7 +204,7 @@ function activateProjectQuickmenu() {
         dom: deleteProjectSelect,
     });
 
-    qStrict("button", deleteProjectSection, HTMLButtonElement).onclick = async (e) => {
+    qStrict("button.delete", deleteProjectSection, HTMLButtonElement).onclick = async (e) => {
         e.preventDefault();
 
         const selectedProject = getSelectedOptionValue(deleteProjectSelect);
@@ -144,33 +223,29 @@ function activateProjectQuickmenu() {
             window.location.reload();
         });
     };
-}
 
-function activateTaskQuickmenu() {
-    const dom = qStrict("#tasks-section");
+    // Task delete
+    const taskDeleteSection = qStrict(".delete-task-section", deleteSection, HTMLDivElement);
+    const taskProjectSelector = qStrict('[name="project"]', taskDeleteSection, HTMLSelectElement);
+    const taskDeleteSelector = qStrict('[name="task"]', taskDeleteSection, HTMLSelectElement);
 
-    const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
-    const projectSelector = qStrict('[name="project"]', dom, HTMLSelectElement);
-    const taskDeleteSelector = qStrict('[name="task"]', dom, HTMLSelectElement);
-
-    nameInput.disabled = true;
     taskDeleteSelector.disabled = true;
 
     createRemoteSelector({
         apiPath: "projects",
         valueKey: "id",
         nameKey: "name",
-        dom: projectSelector,
+        dom: taskProjectSelector,
     });
 
     let currentProjectId = 0;
-    projectSelector.addEventListener("change", (e) => {
-        const project = getSelectedOptionValue(projectSelector);
+
+    taskProjectSelector.addEventListener("change", (e) => {
+        const project = getSelectedOptionValue(taskProjectSelector);
 
         if (project) {
             currentProjectId = Number(project.value);
 
-            nameInput.disabled = false;
             taskDeleteSelector.disabled = false;
         }
     });
@@ -184,21 +259,7 @@ function activateTaskQuickmenu() {
         filter: (item) => item.projectId === currentProjectId,
     });
 
-    qStrict("button.create", dom, HTMLButtonElement).onclick = (e) => {
-        e.preventDefault();
-
-        const project = getSelectedOptionValue(projectSelector);
-        if (!project || !nameInput.value) return;
-
-        request("/tasks/create", "POST", [{ name: nameInput.value, projectId: Number(project.value) }]).then(() => {
-            nameInput.value = "";
-            projectSelector.value = "";
-
-            // window.location.reload();
-        });
-    };
-
-    qStrict("button.delete", dom, HTMLButtonElement).onclick = async (e) => {
+    qStrict("button.delete", taskDeleteSection, HTMLButtonElement).onclick = async (e) => {
         e.preventDefault();
 
         const task = getSelectedOptionValue(taskDeleteSelector);
@@ -216,7 +277,8 @@ function activateTaskQuickmenu() {
         const taskId = Number(value);
 
         request("/tasks/delete", "POST", [taskId]).then(() => {
-            qStrict(`[value="${taskId}"]`, dom, HTMLOptionElement).remove();
+            qStrict(`[value="${taskId}"]`, taskDeleteSelector, HTMLOptionElement).remove();
+
             taskDeleteSelector.value = "";
         });
     };

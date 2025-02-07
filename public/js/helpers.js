@@ -177,12 +177,17 @@ function getSelectedOptionValue(dom) {
 }
 
 /**
- *
+ * @template {HTMLElement} T
  * @param {string} selector
- * @returns
+ * @param {HTMLElement | Document | Element} [fromEl]
+ * @param {new (args: any) => T} [type]
+ * @returns {T | null}
  */
-function q(selector) {
-    return document.querySelector(selector);
+function q(selector, fromEl = document, type) {
+    const el = fromEl.querySelector(selector);
+
+    // @ts-ignore
+    return el;
 }
 
 /**
@@ -193,7 +198,7 @@ function q(selector) {
  * @returns {T}
  */
 function qStrict(selector, fromEl = document, type) {
-    const el = fromEl.querySelector(selector);
+    const el = q(selector, fromEl, type);
 
     if (!el) throw new Error(`${selector} not found`);
 

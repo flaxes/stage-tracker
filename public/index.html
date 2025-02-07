@@ -51,7 +51,7 @@
 
             <div id="quick-menu" class="d-none">
                 <div id="create-custom-stage-time">
-                    <div>Add custom time</div>
+                    <div class="section-title">Add custom time</div>
 
                     <div>
 
@@ -80,7 +80,7 @@
 
                 <div>
                     <div id="create-project-section">
-                        <h3>New project</h3>
+                        <div class="section-title">New project</div>
                         <label>Name</label>
                         <input type="text" name="name" autocomplete="off">
 
@@ -88,7 +88,7 @@
                     </div>
 
                     <div id="edit-project-section">
-                        <h3>Edit project</h3>
+                        <div class="section-title">Edit project</div>
 
                         <div>
                             <label>Selected Project</label>
@@ -104,16 +104,16 @@
                         <button>Save</button>
                     </div>
 
-                    <div id="delete-project-section">
+                    <!-- <div id="delete-project-section">
                         <h3>Delete project</h3>
                         <label>Selected Project</label>
                         <select name="project"></select>
                         <button>Delete</button>
-                    </div>
+                    </div> -->
                 </div>
 
                 <div id="tasks-section">
-                    <div>Create task</div>
+                    <div class="section-title">Create task</div>
 
                     <div>
 
@@ -128,22 +128,47 @@
                         <button class="create">Create</button>
                     </div>
 
-                    <div>
+
+                    <div id="create-stage-section">
+                        <div class="section-title">Create stage</div>
+
+                        <div>
+                            <div>Stage name</div>
+                            <input type="text" name="name" autocomplete="off">
+
+                            <button>Create</button>
+                        </div>
+                    </div>
+
+                    <!-- <div>
                         <div>Task to delete</div>
                         <select name="task"></select>
 
                         <button class="delete">X</button>
-                    </div>
+                    </div> -->
                 </div>
 
-                <div id="create-stage-section">
-                    <div>Create stage</div>
+                <div id="delete-section">
+                    <div id="delete-project-section">
+                        <div class="section-title">Delete project</div>
+                        <label>Selected Project</label>
+                        <select name="project"></select>
+                        <button class="delete">Delete</button>
+                    </div>
 
-                    <div>
-                        <div>Stage name</div>
-                        <input type="text" name="name" autocomplete="off">
+                    <div class="delete-task-section">
+                        <div class="section-title">Delete task</div>
+                        <div>
+                            <label>Project</label>
+                            <select name="project"></select>
+                        </div>
 
-                        <button>Create</button>
+                        <div>
+                            <label>Task</label>
+                            <select name="task"></select>
+                        </div>
+
+                        <button class="delete">Delete</button>
                     </div>
                 </div>
             </div>
@@ -152,7 +177,7 @@
 
             <div id="upper-section">
                 <div class="left-section">
-                    <h2>Week table</h2>
+                    <div class="section-title">Week table</div>
 
                     <div id="pagination">
 
@@ -167,7 +192,7 @@
                 </div>
 
                 <div class="right-section">
-                    <h2>Logging</h2>
+                    <div class="section-title">Logging</div>
                     <div id="stage-logging" class="table-border"></div>
                 </div>
             </div>

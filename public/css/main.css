@@ -89,10 +89,6 @@ input[name="hours"] {
     width: 100%;
 }
 
-#lower-section {
-    justify-content: space-around;
-}
-
 #upper-section .left-section {
     margin-right: 8px;
 }
@@ -100,6 +96,7 @@ input[name="hours"] {
 #task-stats-table {
     width: auto;
     height: min-content;
+    margin-right: 8px;
 }
 
 #task-stats-table tr {
@@ -243,6 +240,15 @@ input[name="hours"] {
 
 #stage-history select {
     width: 100%;
+}
+
+.hide-upper-section {
+    margin-top: 12px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
 }
 
 /* Utility Classes */

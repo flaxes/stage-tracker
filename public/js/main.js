@@ -13,7 +13,6 @@ async function render() {
     qStrict("#refresh-page", void 0, HTMLButtonElement).onclick = () => window.location.reload();
 
     const searchWeek = qStrict("#search-week", document, HTMLInputElement);
-    const projectsBar = qStrict("#projects");
     const upperSection = qStrict("#upper-section");
     const lowerSection = qStrict("#lower-section");
 
@@ -23,7 +22,9 @@ async function render() {
 
     let projectId = Number(SEARCH.get("project"));
 
-    if (!projects[projectId]) {
+    const project = projects[projectId];
+
+    if (!project) {
         // console.log("no project");
         const projectsVals = Object.values(projects);
 
@@ -35,30 +36,6 @@ async function render() {
             }
         }
     }
-
-    const onProjectClick = (e) => {
-        const id = e.target.dataset.id;
-        if (!id) return;
-
-        refreshWithNewSearch("project", id);
-    };
-
-    const html = Object.values(projects)
-        .sort((a, b) => a.createdAt - b.createdAt)
-        .map((item) => {
-            const style = getButtonStyleColorsText(item.color || DEFAULT_PROJECT_COLOR);
-
-            return wrapTag("a", item.name, {
-                "data-id": item.id,
-                class: "project-select",
-                href: "#",
-                style,
-            });
-        })
-        .join("");
-
-    projectsBar.insertAdjacentHTML("beforeend", html);
-    projectsBar.querySelectorAll("a").forEach((item) => (item.onclick = onProjectClick));
 
     const m = moment(currentWeek);
 
@@ -83,16 +60,24 @@ async function render() {
     qStrict(".search-prev").onclick = changeWeek(-1);
     qStrict(".search-next").onclick = changeWeek(1);
 
-    activateCreateStageQuickmenu();
-    activateProjectQuickmenu();
-    activateTaskQuickmenu();
-    activateCustomStageTimeQuickmenu();
-
     if (!projectId) return;
     const stageTracker = new StageTracker("#week-table", projectId);
     const stageLogging = new StageLogging("#stage-logging", projectId);
     const taskStats = new TaskStats("#task-stats-table", projectId);
     const stageHistory = new StageHistory("#stage-history", projectId);
+
+    const domsForColoring = [stageTracker.dom, taskStats.dom, stageHistory.dom];
+
+    for (const dom of domsForColoring) {
+        dom.style.borderColor = project.color || DEFAULT_PROJECT_COLOR;
+    }
+
+    activateProjectSelectionQuickMenu(projects);
+    activateCreateStageQuickmenu();
+    activateProjectQuickmenu(domsForColoring);
+    activateTaskQuickmenu();
+    activateCustomStageTimeQuickmenu();
+    activeDeleteSection();
 
     createElementHideButton(upperSection, "upper_section_hidden", qStrict(".hide-upper-section"));
     createElementHideButton(lowerSection, "lower_section_hidden", qStrict(".hide-lower-section"));
