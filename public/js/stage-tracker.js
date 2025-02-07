@@ -161,7 +161,12 @@ class StageTracker {
             }
         }
 
-        createRemoteSelector(stageSelector, "stages", "id", "name");
+        createRemoteSelector({
+            apiPath: "stages",
+            valueKey: "id",
+            nameKey: "name",
+            dom: stageSelector,
+        });
 
         const hoursInput = qStrict('[name="hours"]', div, HTMLInputElement);
         if (row.hours) hoursInput.value = row.hours;

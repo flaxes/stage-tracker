@@ -4,8 +4,18 @@ const STORAGE_DIR = "./storage";
 
 if (!fs.existsSync(STORAGE_DIR)) fs.mkdirSync(STORAGE_DIR);
 
+/**
+ * @typedef {Record<string, { storage: Store; idColumn: string; onDelete: "NULL" | "DELETE" | "NOTHING" }>} StoreChildren
+ */
+
 class Store {
-    constructor(file, defaults) {
+    /**
+     *
+     * @param {string} file
+     * @param {object} [defaults]
+     * @param {StoreChildren} [children]
+     */
+    constructor(file, defaults, children) {
         this.file = file;
         this.filePath = `${STORAGE_DIR}/${this.file}.json`;
 
@@ -16,6 +26,9 @@ class Store {
                   lastIndex: 0,
                   manifest: 0,
               };
+
+        /** @private */
+        this.children = children;
     }
 
     getId(id) {

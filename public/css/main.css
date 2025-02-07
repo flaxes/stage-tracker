@@ -46,7 +46,7 @@ th {
 }
 
 select[name="task"] {
-    width: 100px;
+    width: 200px;
 }
 
 select[name="stage"] {

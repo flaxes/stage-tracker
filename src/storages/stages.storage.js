@@ -1,4 +1,5 @@
 const Store = require("../core/store");
+const taskStageTimesStorage = require("./task-stage-times.storage");
 
 const stageDefaults = {
     data: {
@@ -31,6 +32,12 @@ const stageDefaults = {
     lastIndex: 5,
 };
 
-const stagesStorage = new Store("stages-storage", stageDefaults);
+const stagesStorage = new Store("stages-storage", stageDefaults, {
+    TaskStages: {
+        storage: taskStageTimesStorage,
+        idColumn: "stageId",
+        onDelete: "NOTHING",
+    },
+});
 
 module.exports = stagesStorage;

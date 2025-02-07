@@ -34,7 +34,12 @@ function activateProjectQuickmenu() {
     const editProjectName = qStrict('[name="name"]', editProjectSection, HTMLInputElement);
     const editProjectColor = qStrict('[name="color"]', editProjectSection, HTMLInputElement);
 
-    const projectsPromise = createRemoteSelector(editProjectSelect, "projects", "id", "name");
+    const projectsPromise = createRemoteSelector({
+        apiPath: "projects",
+        valueKey: "id",
+        nameKey: "name",
+        dom: editProjectSelect,
+    });
 
     editProjectSelect.addEventListener("change", async (e) => {
         const selectedProject = getSelectedOptionValue(editProjectSelect);
@@ -70,7 +75,12 @@ function activateProjectQuickmenu() {
     const deleteProjectSection = qStrict("#delete-project-section");
     const deleteProjectSelect = qStrict('[name="project"]', deleteProjectSection, HTMLSelectElement);
 
-    createRemoteSelector(deleteProjectSelect, "projects", "id", "name");
+    createRemoteSelector({
+        apiPath: "projects",
+        valueKey: "id",
+        nameKey: "name",
+        dom: deleteProjectSelect,
+    });
 
     qStrict("button", deleteProjectSection, HTMLButtonElement).onclick = (e) => {
         e.preventDefault();
@@ -87,15 +97,39 @@ function activateProjectQuickmenu() {
     };
 }
 
-function activateCreateTaskQuickmenu() {
-    const dom = qStrict("#create-task-section");
+function activateTaskQuickmenu() {
+    const dom = qStrict("#tasks-section");
 
     const nameInput = qStrict('[name="name"]', dom, HTMLInputElement);
     const projectSelector = qStrict('[name="project"]', dom, HTMLSelectElement);
+    const taskDeleteSelector = qStrict('[name="task"]', dom, HTMLSelectElement);
 
-    createRemoteSelector(projectSelector, "projects", "id", "name");
+    createRemoteSelector({
+        apiPath: "projects",
+        valueKey: "id",
+        nameKey: "name",
+        dom: projectSelector,
+    });
 
-    qStrict("button", dom, HTMLButtonElement).onclick = (e) => {
+    let currentProjectId = 0;
+    projectSelector.addEventListener("change", (e) => {
+        const project = getSelectedOptionValue(projectSelector);
+
+        if (project) {
+            currentProjectId = Number(project.value);
+        }
+    });
+
+    createRemoteSelector({
+        apiPath: "tasks",
+        valueKey: "id",
+        nameKey: "name",
+        dom: taskDeleteSelector,
+        sorter: (a, b) => (a.name > b.name ? 1 : -1),
+        filter: (item) => item.projectId === currentProjectId,
+    });
+
+    qStrict("button.create", dom, HTMLButtonElement).onclick = (e) => {
         e.preventDefault();
 
         const project = getSelectedOptionValue(projectSelector);
@@ -108,6 +142,19 @@ function activateCreateTaskQuickmenu() {
             // window.location.reload();
         });
     };
+
+    qStrict("button.delete", dom, HTMLButtonElement).onclick = (e) => {
+        e.preventDefault();
+
+        const task = getSelectedOptionValue(taskDeleteSelector);
+        if (!task) return;
+
+        const taskId = Number(task.value);
+
+        request("/tasks/delete", "POST", [taskId]).then(() => {
+            qStrict(`[value="${taskId}"]`, dom, HTMLOptionElement).remove();
+        });
+    };
 }
 
 function activateCustomStageTimeQuickmenu() {
@@ -118,8 +165,19 @@ function activateCustomStageTimeQuickmenu() {
     const taskSelector = qStrict('[name="task"]', dom, HTMLSelectElement);
     const stageSelector = qStrict('[name="stage"]', dom, HTMLSelectElement);
 
-    createRemoteSelector(taskSelector, "tasks", "id", "name");
-    createRemoteSelector(stageSelector, "stages", "id", "name");
+    createRemoteSelector({
+        apiPath: "tasks",
+        valueKey: "id",
+        nameKey: "name",
+        dom: taskSelector,
+    });
+
+    createRemoteSelector({
+        apiPath: "stages",
+        valueKey: "id",
+        nameKey: "name",
+        dom: stageSelector,
+    });
 
     const quickMenuDom = qStrict("#quick-menu-button", document, HTMLButtonElement);
     quickMenuDom.onclick = () => {
@@ -241,7 +299,7 @@ async function render() {
 
     activateCreateStageQuickmenu();
     activateProjectQuickmenu();
-    activateCreateTaskQuickmenu();
+    activateTaskQuickmenu();
     activateCustomStageTimeQuickmenu();
 
     if (!projectId) return;

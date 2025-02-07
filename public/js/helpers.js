@@ -113,14 +113,11 @@ function wrapTag(tag, text, props, elements) {
 }
 
 /**
- *
- * @param {HTMLSelectElement} dom
- * @param {string} apiPath
- * @param {string} [valueKey]
- * @param {string} [nameKey]
- * @param {(a: any, b: any) => number} [sorter]
+ * @param {RemoteSelectorOptions} options
  */
-function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name", sorter) {
+function createRemoteSelector(options) {
+    const { apiPath, dom, filter, nameKey, sorter, valueKey } = options;
+
     return new Promise((resolve, reject) => {
         dom.onclick = async (e) => {
             const entities = await requestCached(apiPath, "GET").catch((err) => reject(err));
@@ -139,9 +136,13 @@ function createRemoteSelector(dom, apiPath, valueKey = "id", nameKey = "name", s
                 dom.appendChild(lastSel);
             }
 
-            const arr = Object.values(entities);
+            let arr = Object.values(entities);
 
             if (!arr.length) return;
+
+            if (filter) {
+                arr = arr.filter(filter);
+            }
 
             if (sorter) {
                 arr.sort(sorter);

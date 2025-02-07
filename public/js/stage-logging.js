@@ -46,10 +46,12 @@ class StageLogging {
 
         for (const row of timesArray) {
             const task = tasks[row.taskId];
+            if (!task) continue;
+
             const stage = stages[row.stageId];
             const project = projects[task.projectId];
 
-            if (!task || !stage || !project) {
+            if (!stage || !project) {
                 continue;
             }
 

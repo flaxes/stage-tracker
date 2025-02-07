@@ -50,8 +50,13 @@ class TaskStats {
 
         for (const taskTime of taskTimes) {
             total += taskTime.hours;
+            const task = tasks[taskTime.taskId];
 
-            if (tasks[taskTime.taskId].projectId !== this.projectId) {
+            if (!task) {
+                continue;
+            }
+
+            if (task.projectId !== this.projectId) {
                 continue;
             }
 
