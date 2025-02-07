@@ -1,5 +1,6 @@
 // @ts-check
-if (!moment) var moment = require("./lib/moment");
+if (!moment) var moment = require("../lib/moment");
+vex.defaultOptions.className = "vex-theme-default";
 
 function activateCreateStageQuickmenu() {
     const dom = qStrict("#create-stage-section");
@@ -82,7 +83,7 @@ function activateProjectQuickmenu() {
         dom: deleteProjectSelect,
     });
 
-    qStrict("button", deleteProjectSection, HTMLButtonElement).onclick = (e) => {
+    qStrict("button", deleteProjectSection, HTMLButtonElement).onclick = async(e) => {
         e.preventDefault();
 
         const selectedProject = getSelectedOptionValue(deleteProjectSelect);
@@ -94,7 +95,7 @@ function activateProjectQuickmenu() {
             "Write the ID of project to confirm (only number).",
         ].join("\n");
 
-        const isConfirmed = prompt(txt) === value;
+        const isConfirmed = await vexPrompt(txt) === value;
         if (!isConfirmed) return;
 
         request("/projects/delete", "POST", [Number(value)]).then(() => {
@@ -155,7 +156,7 @@ function activateTaskQuickmenu() {
         });
     };
 
-    qStrict("button.delete", dom, HTMLButtonElement).onclick = (e) => {
+    qStrict("button.delete", dom, HTMLButtonElement).onclick = async(e) => {
         e.preventDefault();
 
         const task = getSelectedOptionValue(taskDeleteSelector);
@@ -167,7 +168,7 @@ function activateTaskQuickmenu() {
             "Enter the task ID to confirm (numbers only).",
         ].join("\n");
 
-        const isConfirmed = prompt(txt) === value;
+        const isConfirmed = await vexPrompt(txt) === value;
         if (!isConfirmed) return;
 
         const taskId = Number(value);
@@ -235,7 +236,7 @@ function activateCustomStageTimeQuickmenu() {
             })
             .catch((err) => {
                 console.error(err);
-                alert(err.message);
+                vexAlert(err.message);
             });
     };
 }

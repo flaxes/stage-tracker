@@ -401,6 +401,16 @@ function setButtonColor(button, hex) {
     return button;
 }
 
+const vexConfirm = (message) =>
+    new Promise((callback) => {
+        vex.dialog.confirm({ message, callback });
+    });
+
+const vexAlert = (message) => vex.dialog.alert(message);
+
+const vexPrompt = (message, placeholder) =>
+    new Promise((callback) => vex.dialog.prompt({ message, placeholder, callback }));
+
 const getTimeFromDate = (date) => date.slice(11, 16);
 
 const sorters = {

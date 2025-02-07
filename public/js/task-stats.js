@@ -108,7 +108,7 @@ class TaskStats {
                 const task = tasks[id];
 
                 if (!task) {
-                    alert("Not found task!");
+                    vexAlert("Not found task!");
                     return;
                 }
                 task.name = input.value;
@@ -124,7 +124,7 @@ class TaskStats {
                 const task = tasks[id];
 
                 if (!task) {
-                    alert("Not found task!");
+                    vexAlert("Not found task!");
                     return;
                 }
                 task.isHidden = !task.isHidden;

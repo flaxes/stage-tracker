@@ -201,14 +201,14 @@ class StageTracker {
                 })
                 .catch((err) => {
                     console.error(err);
-                    alert(err.message);
+                    vexAlert(err.message);
                 });
 
             // button.remove();
         };
 
         const deleteAction = async () => {
-            const answer = confirm("Are you sure?");
+            const answer = await vexConfirm("Are you sure?");
             if (!answer) return;
 
             const id = Number(div.dataset.id);

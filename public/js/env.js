@@ -7,3 +7,6 @@
 
 /** @type {typeof import('../../config')['browserEnv']} */ // @ts-ignore
 const ENV = {};
+
+/** @type {any} */
+const vex = {};
