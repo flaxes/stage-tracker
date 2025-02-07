@@ -33,6 +33,7 @@ if (manifest < 1) {
 
 if (manifest !== taskStageTimesStorage.data.manifest) {
     console.log("taskStageTimesStorage manifest updated to", manifest);
+
     taskStageTimesStorage.data.manifest = manifest;
     taskStageTimesStorage.save();
 }

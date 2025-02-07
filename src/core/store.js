@@ -68,12 +68,58 @@ class Store {
         return data;
     }
 
+    /**
+     *
+     * @param {number[]} ids
+     * @returns
+     */
     delete(ids) {
+        let deletedCount = 0;
+
+        if (!ids.length) return deletedCount;
+
         for (const id of ids) {
-            delete this.data.data[id];
+            if (this.data.data[id]) {
+                delete this.data.data[id];
+                deletedCount++;
+            }
         }
 
         this.save();
+
+        if (this.children) {
+            for (const child of Object.values(this.children)) {
+                if (child.onDelete === "NOTHING") continue;
+
+                const childRows = Object.values(child.storage.getAll());
+
+                if (child.onDelete === "DELETE") {
+                    const affectedRowsIds = [];
+
+                    for (const childRow of childRows) {
+                        if (ids.includes(childRow[child.idColumn])) {
+                            affectedRowsIds.push(childRow.id);
+                        }
+                    }
+
+                    child.storage.delete(affectedRowsIds);
+                    continue;
+                }
+
+                if (child.onDelete === "NULL") {
+                    const toUpdate = [];
+                    for (const childRow of childRows) {
+                        if (ids.includes(childRow[child.idColumn])) {
+                            childRow[child.idColumn] = null;
+
+                            toUpdate.push(childRow);
+                        }
+                    }
+
+                    child.storage.update(toUpdate);
+                }
+            }
+        }
 
         return true;
     }

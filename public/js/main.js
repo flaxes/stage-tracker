@@ -87,11 +87,17 @@ function activateProjectQuickmenu() {
 
         const selectedProject = getSelectedOptionValue(deleteProjectSelect);
         if (!selectedProject) return;
-        const txt = `You want to delete "${selectedProject.text}" project. Are you sure?`;
-        const isConfirmed = confirm(txt);
+
+        const { value, text } = selectedProject;
+        const txt = [
+            `Are you sure you want to delete project ID: ${value} "${text}" and all its tasks?`,
+            "Write the ID of project to confirm (only number).",
+        ].join("\n");
+
+        const isConfirmed = prompt(txt) === value;
         if (!isConfirmed) return;
 
-        request("/projects/delete", "POST", [Number(selectedProject.value)]).then(() => {
+        request("/projects/delete", "POST", [Number(value)]).then(() => {
             window.location.reload();
         });
     };
@@ -149,10 +155,20 @@ function activateTaskQuickmenu() {
         const task = getSelectedOptionValue(taskDeleteSelector);
         if (!task) return;
 
-        const taskId = Number(task.value);
+        const { text, value } = task;
+        const txt = [
+            `Are you sure you want to delete task ID: ${value} ("${text}") and all its data?`,
+            "Enter the task ID to confirm (numbers only).",
+        ].join("\n");
+
+        const isConfirmed = prompt(txt) === value;
+        if (!isConfirmed) return;
+
+        const taskId = Number(value);
 
         request("/tasks/delete", "POST", [taskId]).then(() => {
             qStrict(`[value="${taskId}"]`, dom, HTMLOptionElement).remove();
+            taskDeleteSelector.value = "";
         });
     };
 }
