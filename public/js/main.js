@@ -83,7 +83,7 @@ function activateProjectQuickmenu() {
         dom: deleteProjectSelect,
     });
 
-    qStrict("button", deleteProjectSection, HTMLButtonElement).onclick = async(e) => {
+    qStrict("button", deleteProjectSection, HTMLButtonElement).onclick = async (e) => {
         e.preventDefault();
 
         const selectedProject = getSelectedOptionValue(deleteProjectSelect);
@@ -95,7 +95,7 @@ function activateProjectQuickmenu() {
             "Write the ID of project to confirm (only number).",
         ].join("\n");
 
-        const isConfirmed = await vexPrompt(txt) === value;
+        const isConfirmed = (await vexPrompt(txt)) === value;
         if (!isConfirmed) return;
 
         request("/projects/delete", "POST", [Number(value)]).then(() => {
@@ -156,7 +156,7 @@ function activateTaskQuickmenu() {
         });
     };
 
-    qStrict("button.delete", dom, HTMLButtonElement).onclick = async(e) => {
+    qStrict("button.delete", dom, HTMLButtonElement).onclick = async (e) => {
         e.preventDefault();
 
         const task = getSelectedOptionValue(taskDeleteSelector);
@@ -168,7 +168,7 @@ function activateTaskQuickmenu() {
             "Enter the task ID to confirm (numbers only).",
         ].join("\n");
 
-        const isConfirmed = await vexPrompt(txt) === value;
+        const isConfirmed = (await vexPrompt(txt)) === value;
         if (!isConfirmed) return;
 
         const taskId = Number(value);
@@ -247,7 +247,9 @@ function setTheme(theme) {
 }
 
 async function render() {
-    setTheme(ENV.theme);
+    setTheme(ENV.theme || "default");
+
+    qStrict("#refresh-page", void 0, HTMLButtonElement).onclick = () => window.location.reload();
 
     const searchWeek = qStrict("#search-week", document, HTMLInputElement);
     const projectsBar = qStrict("#projects");

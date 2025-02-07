@@ -2,6 +2,8 @@
 
 echo Updating...
 
+del package-lock.json
+
 git pull
 
 npm install --production
