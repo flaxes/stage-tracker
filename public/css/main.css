@@ -75,7 +75,7 @@ input[name="hours"] {
 
 #quick-menu {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 #quick-menu div div {
@@ -91,6 +91,10 @@ input[name="hours"] {
 
 #lower-section {
     justify-content: space-around;
+}
+
+#upper-section .left-section {
+    margin-right: 8px;
 }
 
 #task-stats-table {
