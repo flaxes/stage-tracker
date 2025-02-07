@@ -31,7 +31,8 @@ class StageTracker {
 
             theadColumns.push(
                 wrapTag("th", "", { class: "tooltip" }, [
-                    wrapTag("span", monday.toDate().toLocaleDateString(), { class: "tooltip-text tooltip-top" }),
+                    // wrapTag("span", monday.toDate().toLocaleDateString(), { class: "tooltip-text tooltip-top" }),
+                    wrapTag("span", monday.toDate().toLocaleDateString(), {}),
                     wrapTag("div", dayName),
                 ])
             );
