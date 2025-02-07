@@ -6,8 +6,8 @@ del package-lock.json
 
 git pull
 
-npm install --production
+call npm install --production
 
-echo Done.
+echo Done. Please restart program. Close this window or wait.
 
 timeout 2
