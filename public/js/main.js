@@ -110,6 +110,9 @@ function activateTaskQuickmenu() {
     const projectSelector = qStrict('[name="project"]', dom, HTMLSelectElement);
     const taskDeleteSelector = qStrict('[name="task"]', dom, HTMLSelectElement);
 
+    nameInput.disabled = true;
+    taskDeleteSelector.disabled = true;
+
     createRemoteSelector({
         apiPath: "projects",
         valueKey: "id",
@@ -123,6 +126,9 @@ function activateTaskQuickmenu() {
 
         if (project) {
             currentProjectId = Number(project.value);
+
+            nameInput.disabled = false;
+            taskDeleteSelector.disabled = false;
         }
     });
 
