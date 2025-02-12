@@ -176,25 +176,36 @@
             <button class="hide-upper-section">Hide</button>
 
             <div id="upper-section">
+
                 <div class="left-section">
-                    <div class="section-title">Week table</div>
+                    <div>
+                        <span class="section-title">Week table</span>
 
-                    <div id="pagination">
+                        <span id="pagination">
 
-                        <button class="search-prev">Prev</button>
+                            <button class="search-prev">Prev</button>
 
-                        <input type="week" name="week" id="search-week" required />
+                            <input type="week" name="week" id="search-week" required />
 
-                        <button class="search-next">Next</button>
+                            <button class="search-next">Next</button>
+                        </span>
                     </div>
+
 
                     <table id="week-table" class="table-border"></table>
                 </div>
 
                 <div class="right-section">
-                    <div class="section-title">Logging</div>
-                    <div id="stage-logging" class="table-border"></div>
+                    <div>
+                        <span class="section-title">Logging</span>
+                        <button class="copy-logging-button">Copy</button>
+                    </div>
+
+                    <div id="stage-logging" class="table-border">
+                        <div class="project-checkboxes"></div>
+                    </div>
                 </div>
+
             </div>
 
             <div>

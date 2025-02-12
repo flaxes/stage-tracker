@@ -151,14 +151,6 @@ input[name="hours"] {
     width: 500px;
     height: 800px;
     text-align: start;
-    overflow-y: auto;
-}
-
-#stage-logging .copy-button-container {
-    width: 100%;
-    margin-bottom: 10px;
-    height: 20px;
-    text-align: center;
 }
 
 #stage-logging .project-checkbox-container {
@@ -178,14 +170,14 @@ input[name="hours"] {
     padding-bottom: 8px;
 }
 
-#stage-logging button {
-    width: 50%;
-    margin-bottom: 20px;
-}
-
 #stage-logging span {
     padding-right: 12px;
     display: inline-block;
+}
+
+#stage-logging .stage-logging-data {
+    height: 776px;
+    overflow-y: scroll;
 }
 
 #stage-logging .stage-logging-data span:last-child {

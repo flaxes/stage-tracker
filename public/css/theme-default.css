@@ -6,6 +6,7 @@
     --secondary-hover: #460088;
     --button-visible: #98eb7f;
     --button-hidden: #8082f8;
+    --border-width: 2px;
 }
 
 body {
@@ -46,7 +47,7 @@ th {
 }
 
 #task-stats-table td {
-    border: #000 1px solid;
+    border: var(--border-width) solid #000;
 }
 
 #task-stats-table tr:nth-child(odd) {
@@ -58,7 +59,7 @@ th {
 }
 
 #week-table .delete-button {
-    border: 1px solid #000;
+    border: var(--border-width) solid #000;
     border-radius: 8cm;
 }
 
@@ -100,6 +101,6 @@ th {
 }
 
 .table-border {
-    border: 2px solid #000;
+    border: var(--border-width) solid #000;
     border-radius: 12px;
 }

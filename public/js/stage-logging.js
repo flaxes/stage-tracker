@@ -12,6 +12,8 @@ class StageLogging {
         this.projectId = projectId;
 
         this.txt = "";
+
+        this.isReversedLogs = true;
     }
 
     async renderLogs() {
@@ -27,7 +29,8 @@ class StageLogging {
             requestCached("projects", "GET"),
         ]);
 
-        const timesArray = Object.values(stageTimes).sort((a, b) => a.dateTs - b.dateTs);
+        const sortBy = this.isReversedLogs ? (a, b) => b - a : (a, b) => a - b;
+        const timesArray = Object.values(stageTimes).sort((a, b) => sortBy(a.dateTs, b.dateTs));
 
         const elements = [];
 
@@ -37,7 +40,7 @@ class StageLogging {
         const allowedProjects = [];
         qqStrict("input.project-checkbox-input", this.dom, HTMLInputElement).forEach((item) => {
             if (item.checked) {
-                /** @type {HTMLDivElement>} */ // @ts-ignore
+                /** @type {HTMLDivElement} */ // @ts-ignore
                 const parent = item.parentElement;
 
                 allowedProjects.push(Number(parent.dataset.projectId));
@@ -102,24 +105,15 @@ class StageLogging {
         }
 
         this.domLogs.insertAdjacentHTML("beforeend", elements.join(""));
+        this.domLogs.scroll(0, 0);
     }
 
     async render() {
         const [projects] = await Promise.all([requestCached("projects", "GET")]);
 
-        this.dom.insertAdjacentHTML(
-            "beforeend",
-            wrapTag("div", "", { class: "copy-button-container" }, [
-                wrapTag("button", "copy", { class: "copy-button" }),
-            ])
-        );
-
         const projectValues = Object.values(projects);
-        const projectCheckboxes = wrapTag(
-            "div",
-            "",
-            { class: "project-checkboxes" },
-            projectValues.map((item) => {
+        const projectCheckboxes = projectValues
+            .map((item) => {
                 const style = getButtonStyleColorsText(item.color || DEFAULT_PROJECT_COLOR);
                 const checkbox = wrapTag("input", "", {
                     class: "project-checkbox-input",
@@ -137,9 +131,10 @@ class StageLogging {
 
                 return html;
             })
-        );
+            .join("");
 
-        this.dom.insertAdjacentHTML("beforeend", projectCheckboxes);
+        qStrict(".project-checkboxes", this.dom, HTMLDivElement).insertAdjacentHTML("beforeend", projectCheckboxes);
+
         qqStrict(".project-checkbox-container", this.dom, HTMLSpanElement).forEach((container) => {
             const checkbox = qStrict("input", container, HTMLInputElement);
             checkbox.checked = true;
@@ -157,7 +152,13 @@ class StageLogging {
             };
         });
 
-        qStrict("button.copy-button", this.dom).onclick = () => {
+        const parent = this.dom.parentElement;
+
+        if (!parent) {
+            throw new Error("Not Initialized yet!");
+        }
+
+        qStrict("button.copy-logging-button", parent).onclick = () => {
             copyToClipboard(this.txt);
         };
 

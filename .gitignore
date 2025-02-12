@@ -1,5 +1,5 @@
 node_modules
 logs
-storage
+/storage*
 config.js
 out/

@@ -7,6 +7,6 @@
         "checkJs": true,
         "strictNullChecks": true
     },
-    "include": ["./**/*.js", "../types/**/*.ts"],
+    "include": ["./js/*.js", "../types/**/*.ts"],
     "exclude": ["node_modules", "build"]
 }

@@ -11,6 +11,7 @@
     --button-visible: #03dac5;
     --button-hidden: #bb86fc;
     --border-color: #444;
+    --border-width: 2px;
 }
 
 body {
@@ -49,7 +50,7 @@ th {
 }
 
 #task-stats-table td {
-    border: var(--border-color) 1px solid;
+    border: var(--border-width) solid var(--border-color);
 }
 
 #task-stats-table tr {
@@ -71,7 +72,7 @@ th {
 }
 
 #week-table .delete-button {
-    border: 1px solid var(--border-color);
+    border: var(--border-width) solid var(--border-color);
     border-radius: 8cm;
 }
 
@@ -109,6 +110,6 @@ th {
 }
 
 .table-border {
-    border: 2px solid var(--border-color);
+    border: var(--border-width) solid var(--border-color);
     border-radius: 12px;
 }
