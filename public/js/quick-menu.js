@@ -27,7 +27,6 @@ function activateProjectSelectionQuickMenu(projects) {
 
     projectsBar.insertAdjacentHTML("beforeend", html);
     projectsBar.querySelectorAll("a").forEach((item) => (item.onclick = onProjectClick));
-
 }
 
 function activateCustomStageTimeQuickmenu() {
@@ -175,6 +174,8 @@ function activateTaskQuickmenu() {
         nameKey: "name",
         dom: projectSelector,
     });
+
+    projectSelector.addEventListener("change", () => (nameInput.disabled = false));
 
     qStrict("button.create", dom, HTMLButtonElement).onclick = (e) => {
         e.preventDefault();
