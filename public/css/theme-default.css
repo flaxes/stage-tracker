@@ -47,7 +47,7 @@ th {
 }
 
 #task-stats-table td {
-    border: var(--border-width) solid #000;
+    border: 1px solid #000;
 }
 
 #task-stats-table tr:nth-child(odd) {
