@@ -59,7 +59,7 @@ th {
 }
 
 #week-table .delete-button {
-    border: var(--border-width) solid #000;
+    border: 1px solid #000;
     border-radius: 8cm;
 }
 
